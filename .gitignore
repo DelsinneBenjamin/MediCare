@@ -1,0 +1,62 @@
+# === FRONT ANGULAR ===
+
+# Compiled output
+/dist/
+/out-tsc/
+
+# Angular specific
+.angular/
+.angular-cache/
+
+# IDE / editor settings
+.vscode/
+*.sublime*
+
+# Node modules
+/node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+
+# Tests output
+/coverage/
+/e2e/test-output/
+
+# === BACK DJANGO ===
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.py~ 
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Django stuff:
+db.sqlite3
+*.sqlite3
+*.log
+*.pot
+*.pyc
+
+# Media / static cache
+/media/
+staticfiles/
+*.tmp
+
+# Secrets
+.env
+
+# Migration history (optional)
+**/migrations/*.pyc
+**/migrations/__pycache__/
