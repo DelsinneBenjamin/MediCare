@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { Login } from './authentification/login/login';
-import { DoctorHome } from './home/doctor-home/doctor-home';
+import { LandingPage } from './features/Landing/landing-page/landing-page';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
+    { path: '', component: LandingPage, pathMatch: 'full' },
     { path: 'login', component: Login },
-    { path: 'doctorHomePage', component: DoctorHome}
+    { path: 'doctorHomePage', component: LandingPage}
 ];
