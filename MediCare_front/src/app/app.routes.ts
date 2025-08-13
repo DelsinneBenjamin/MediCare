@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { Login } from './authentification/login/login';
+import { Login } from './features/auth/login/login';
 import { LandingPage } from './features/Landing/landing-page/landing-page';
 
 export const routes: Routes = [

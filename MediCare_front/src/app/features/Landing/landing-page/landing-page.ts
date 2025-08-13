@@ -15,3 +15,4 @@ export class LandingPage {
     this.isOpen = !this.isOpen;
   }
 }
+  
