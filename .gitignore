@@ -9,6 +9,7 @@
 .angular-cache/
 
 # IDE / editor settings
+.idea
 .vscode/
 *.sublime*
 

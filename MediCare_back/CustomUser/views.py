@@ -1,44 +1,60 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth import authenticate
-
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from CustomUser.serializers import UserSerializer
-
+from CustomUser.serializers import RegisterSerializer, LoginSerializer, UserSerializer, LinkPatientDoctorSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 class UserRegistrationView(generics.CreateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
 
-    def perform_create(self, serializer):
+    def create(self,request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
         refresh = RefreshToken.for_user(user)
-        self.tokens = {
+        data = {
+            'user': UserSerializer(user).data,
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        response.data['tokens'] = self.tokens
-        return response
-
+        return Response(data, status=status.HTTP_201_CREATED)
 
 class UserLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
+    def post(self,request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        user = authenticate(email=email, password=password)
-        if user:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            })
-        else:
-            return Response({'error': 'Invalid credentials'}, status=401)
+        user = serializer.validated_data["user"]
+        refresh = RefreshToken.for_user(user)
+        data = {
+            'user': UserSerializer(user).data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+class LinkPatientDoctorView(APIView):
+    serializer_class =  LinkPatientDoctorSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        patient = serializer.save()
+
+        return Response({'detail': 'Patient lié au Doctor : OK '}, status=status.HTTP_200_OK)
+
+class gestionAuth():
+
+    @api_view(['GET'])
+    @permission_classes([IsAuthenticated])
+    def current_user(request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
