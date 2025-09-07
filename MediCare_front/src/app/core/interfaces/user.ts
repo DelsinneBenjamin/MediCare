@@ -1,9 +1,8 @@
-export interface UserData {
-    id: number;
-    username: string;
-    email: string;
-    password: string;
-    phoneNumber: string;
-    role: 'patient' | 'docteur' | 'admin';
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: 'doctor' | 'patient';
+  doctor?: Doctor;
+  patient?: Patient;
 }
-
