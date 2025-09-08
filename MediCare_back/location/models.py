@@ -14,7 +14,7 @@ class Address(models.Model):
 
 class Site(models.Model):
     name = models.TextField()
-    site_type = models.TextField(
+    site_type = models.CharField(max_length=20,
         choices= [("HOSPITAL", "Hôpital"),
                   ("CLINIC", "Clinique"),
                   ("CABINET", "Cabinet")]

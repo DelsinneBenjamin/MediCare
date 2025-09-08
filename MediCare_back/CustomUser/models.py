@@ -15,7 +15,8 @@ class CustomUser(AbstractUser):
 
     #Un user à 1 seule adresse, une adresse peu avoir plusieurs user(genre une famille)
     #Many To One Adresse 1,N - 1,1 User
-    address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name="customuser")
+    # address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name="customuser")
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Doctor(models.Model):
     #Ici un Docteur EST un user
@@ -25,21 +26,13 @@ class Doctor(models.Model):
     speciality = models.CharField(max_length=20)
     inami_number = models.CharField(max_length=20)
 
-<<<<<<< Updated upstream
     #Relation ManyToMany avec Patient : Un docteur peut avoir plusieurs patients et un patient peut avoir plusieurs docteurs
     patients = models.ManyToManyField('Patient', related_name='doctors', blank=True)
-
-=======
-<<<<<<< Updated upstream
-=======
-    #Relation ManyToMany avec Patient : Un docteur peut avoir plusieurs patients et un patient peut avoir plusieurs docteurs
-    patients = models.ManyToManyField('Patient', related_name='doctor', blank=True)
 
     # Un médecin peut travailler dans plusieurs sites
     sites = models.ManyToManyField(Site, related_name="doctor")
 
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+
     def __str__(self):
         return f"Dr. {self.user.get_full_name()} - {self.speciality} ({self.inami_number})"
 
