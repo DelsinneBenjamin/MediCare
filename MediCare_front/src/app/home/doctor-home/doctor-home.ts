@@ -1,37 +1,34 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Auth } from '../../core/services/auth';
+import { Component } from '@angular/core';
+import { UserService } from '../../core/services/user-service';
+import { AuthService } from '../../core/services/auth-service';
 import { Router } from '@angular/router';
-import { UserService} from '../../core/services/user-service';
 
 @Component({
   selector: 'app-doctor-home',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './doctor-home.html',
   styleUrl: './doctor-home.css'
 })
-export class DoctorHome{
+export class DoctorHome {
+  constructor(private http: HttpClient, private authService: AuthService, private userService: UserService ,private readonly router:Router) { }
+    users: User[] = []
+    currentUser?: User;
 
-  constructor(private http: HttpClient, private authService: Auth, private userService: UserService ,private readonly router:Router) { }
-  users: User[] = []
-  currentUser?: User;
-
-   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe({
-      next: (user) => {
-        this.currentUser = user;
-        console.log('Utilisateur courant:', user);
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération de l’utilisateur courant', err);
-      }
-    });
-  }
-  
-  logout() {
-    this.authService.logout();
-  }
-  
-  
+    ngOnInit(): void {
+      this.userService.getCurrentUser().subscribe({
+        next: (user) => {
+          this.currentUser = user;
+          console.log('Utilisateur courant:', user);
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération de l’utilisateur courant', err);
+        }
+      });
+    }
+    
+    logout() {
+      this.authService.logout();
+    }
+    
 }

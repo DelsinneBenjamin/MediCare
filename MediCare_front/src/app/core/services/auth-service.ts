@@ -1,15 +1,13 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable,tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { TokenResponse } from '../interfaces/tokenResponse';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Auth {
-
+export class AuthService {
   private apiUrl = 'http://localhost:8000/api/users/';   // url de l'API
 
   constructor(private http: HttpClient, private readonly router:Router) {}
@@ -77,7 +75,4 @@ export class Auth {
       localStorage.removeItem('refresh');
       this.router.navigate(['/login']);
     }
-    
-   
 }
-

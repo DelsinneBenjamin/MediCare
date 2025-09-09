@@ -1,20 +1,16 @@
-import { HttpClient, HttpHeaders, HttpXsrfTokenExtractor, HttpErrorResponse } from '@angular/common/http';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { TokenResponse } from '../interfaces/tokenResponse';
-import { catchError } from 'rxjs/operators';
-import { Auth } from './auth';
-import { isPlatformBrowser } from '@angular/common';
+import { Observable } from "rxjs";
+import { AuthService } from "./auth-service";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-
   private apiUrl = 'http://localhost:8000/api/users';
 
-  constructor(private http: HttpClient, private authService: Auth) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
  
     getAllUser(): Observable<User[]> {
 
