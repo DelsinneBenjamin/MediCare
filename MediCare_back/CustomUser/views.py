@@ -13,7 +13,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 # ============== Inscription d'un utilisateur =============
-@csrf_exempt
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def register_user(request):
@@ -32,7 +31,6 @@ def register_user(request):
     return Response(data, status=status.HTTP_201_CREATED)
 
 # ============== Connexion d'un utilisateur =============
-@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_user(request):
@@ -51,7 +49,6 @@ def login_user(request):
     return Response(data, status=status.HTTP_200_OK)
 
 # ============== Liaison ManyToMany entre le médecin et le patient =============
-@csrf_exempt
 @api_view
 @permission_classes([permissions.IsAuthenticated])
 def link_patient_doctor(request):
@@ -62,7 +59,6 @@ def link_patient_doctor(request):
     return Response({'détail': 'Patient lié au Docteur'}, status=status.HTTP_200_OK)
 
 # ============== Récup les data du current user  =============
-@csrf_exempt
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def current_user(request):
@@ -71,7 +67,6 @@ def current_user(request):
 
 
 # ============= Récup l'ensemble des utilisateurs par rôles ===============
-@csrf_exempt
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_users_by_role(request, role):

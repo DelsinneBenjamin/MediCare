@@ -16,7 +16,7 @@ class Appointments(models.Model):
 
     #Ici pareil... sauf que models.PROTECT car si je tente de del un médecin qui a encore des RDV => PAS OK
     #Pour un patient OSEF car c'est lui qui décide...
-    medecin = models.ForeignKey(Doctor, on_delete=models.PROTECT, related_name="appointment")
+    doctor = models.ForeignKey(Doctor, on_delete=models.PROTECT, related_name="appointment")
 
 
 
