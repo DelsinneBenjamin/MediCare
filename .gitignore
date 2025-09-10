@@ -15,7 +15,7 @@
 *.sublime*
 
 # Node modules
-MediCare_front/node_modules/
+node_modules/
 
 # Logs
 npm-debug.log*
