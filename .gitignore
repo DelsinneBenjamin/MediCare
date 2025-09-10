@@ -5,8 +5,9 @@
 /out-tsc/
 
 # Angular specific
-.angular/
-.angular-cache/
+*/.angular/
+*/.angular-cache/
+
 
 # IDE / editor settings
 .idea
@@ -14,7 +15,7 @@
 *.sublime*
 
 # Node modules
-MediCare_front/node_modules/
+node_modules/
 
 # Logs
 npm-debug.log*
