@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { TokenResponse } from '../interfaces/tokenResponse';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -10,23 +10,50 @@ import { Router } from '@angular/router';
 export class AuthService {
   private apiUrl = 'http://localhost:8000/api/users/';   // url de l'API
 
-  constructor(private http: HttpClient, private readonly router:Router) {}
+  isLoggedIn = signal<boolean>(false);
+  private http = inject(HttpClient)
+  private router = inject(Router)
 
+
+  
   // =========================== Login + Register  ===============================
-    register(data: User): Observable<{ tokens: TokenResponse }> {
-      return this.http.post<{ tokens: TokenResponse }>(`${this.apiUrl}register/`, data).pipe(
+  
+  updateLoginStatus() {
+    const token = this.getToken();
+    this.isLoggedIn.set(!!token);
+    console.log(this.isLoggedIn())
+  }
+
+  register(data: User): Observable<{ tokens: TokenResponse }> {
+    return this.http.post<{ tokens: TokenResponse }>(`${this.apiUrl}register/`, data).pipe(
         tap(res => {
           localStorage.setItem('access', res.tokens.access);
           localStorage.setItem('refresh', res.tokens.refresh);
+          this.isLoggedIn.set(true);
+          this.updateLoginStatus();
         })
       );
     }
 
-    login(data: { email: string; password: string }): Observable<{ access: string; refresh: string }> {
-      return this.http.post<{ access: string; refresh: string }>(`${this.apiUrl}login/`, data).pipe(
-        tap(tokens => {
-          localStorage.setItem('access', tokens.access);
-          localStorage.setItem('refresh', tokens.refresh);
+    login(data: { email: string; password: string }): Observable<{ access: string; refresh: string, role: string}> {
+      return this.http.post<{ access: string; refresh: string , role: string, user: User}>(`${this.apiUrl}login/`, data).pipe(
+        tap(response => {
+          localStorage.setItem('access', response.access);
+          localStorage.setItem('refresh', response.refresh);
+
+          this.isLoggedIn.set(true);
+          this.updateLoginStatus();
+
+          const role = response.user?.role;
+
+         if (role === 'doctor') {
+            this.router.navigate(['/doctor']);
+          } else if (role === 'patient') {
+            this.router.navigate(['/patient']);
+          } else {
+            this.router.navigate(['/']);
+          }
+          
         })
       );
     }
@@ -65,14 +92,10 @@ export class AuthService {
 
 
     // =========================== Verification  ===============================
-    isLoggedIn(): boolean {
-      const token = this.getToken()
-      return !! token
-    }
-
     logout() {
       localStorage.removeItem('access');
       localStorage.removeItem('refresh');
+      this.isLoggedIn.set(false);
       this.router.navigate(['/login']);
     }
 }

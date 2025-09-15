@@ -49,7 +49,7 @@ def login_user(request):
     return Response(data, status=status.HTTP_200_OK)
 
 # ============== Liaison ManyToMany entre le médecin et le patient =============
-@api_view
+@api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def link_patient_doctor(request):
     serializer = LinkPatientDoctorSerializer(data=request.data)
@@ -83,5 +83,9 @@ def get_users_by_role(request, role):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# ============= Récup l'ensemble des utilisateurs ===============
 
-
+class AllUsersView(generics.ListAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]

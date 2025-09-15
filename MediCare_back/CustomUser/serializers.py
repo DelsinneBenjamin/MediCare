@@ -119,12 +119,12 @@ class LinkPatientDoctorSerializer(serializers.Serializer):
         doctor_id = data.get('doctor_id')
 
         try:
-            patient = Patient.objects.get(id=patient_id)
+            patient = Patient.objects.get(user_id=patient_id)
         except Patient.DoesNotExist:
             raise serializers.ValidationError({'patient_id': 'Patient non trouvé.'})
 
         try:
-            doctor = Doctor.objects.get(id=doctor_id)
+            doctor = Doctor.objects.get(user_id=doctor_id)
         except Doctor.DoesNotExist:
             raise serializers.ValidationError({'doctor_id': 'Doctor non trouvé.'})
 

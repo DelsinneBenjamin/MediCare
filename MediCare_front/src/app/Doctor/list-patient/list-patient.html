@@ -1,0 +1,25 @@
+
+<table class="min-w-full table-auto border border-gray-300">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="px-4 py-2 border">ID</th>
+      <th class="px-4 py-2 border">Username</th>
+      <th class="px-4 py-2 border">Email</th>
+      <th class="px-4 py-2 border">Role</th>
+      <th class="px-4 py-2 border">National Number</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      @if (users().length > 0) {
+  @for (user of users(); track user.id) {
+    <div class="user-card">
+      <h3>{{ user.username }}</h3>
+    </div>
+  }
+} @else {
+  <p>Aucun patient trouvé</p>
+}
+    </tr>
+  </tbody>
+</table>

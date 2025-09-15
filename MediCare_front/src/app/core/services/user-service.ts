@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import { AuthService } from "./auth-service";
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 
 
 @Injectable({
@@ -10,18 +10,22 @@ import { Injectable } from "@angular/core";
 export class UserService {
   private apiUrl = 'http://localhost:8000/api/users';
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
- 
+  private http = inject(HttpClient)
+  private authService = inject(AuthService)
+
+
     getAllUser(): Observable<User[]> {
-
       const headers = this.authService.getHeaders();
-
-      return this.http.get<User[]>(`${this.apiUrl}/users`, { headers });
+      return this.http.get<User[]>(`${this.apiUrl}/all`, { headers });
     }
 
     getCurrentUser(): Observable<User> {
       const headers = this.authService.getHeaders();
       return this.http.get<User>(`${this.apiUrl}/me/`, { headers });
+    }
+
+    linkPatientToDoctor(patient: number | null, doctor: number | null) {
+      
     }
 
 }

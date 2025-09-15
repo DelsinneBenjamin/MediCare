@@ -9,7 +9,8 @@ from CustomUser.views import (
     login_user,
     link_patient_doctor,
     current_user,
-    get_users_by_role
+    get_users_by_role,
+    AllUsersView,
 )
 
 urlpatterns = [
@@ -18,4 +19,5 @@ urlpatterns = [
     path('link/', link_patient_doctor, name='link_patient_doctor'),
     path('me/', current_user, name='current_user'),
     path('role/<str:role>/', get_users_by_role, name='get_users_by_role'),
+    path('all/', AllUsersView.as_view(), name='get_all_users'),
 ]
