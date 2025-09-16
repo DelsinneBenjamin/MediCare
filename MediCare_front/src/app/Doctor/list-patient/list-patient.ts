@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { UserService } from '../../core/services/user-service';
 
 @Component({
@@ -11,19 +11,23 @@ import { UserService } from '../../core/services/user-service';
 })
 export class ListPatient implements OnInit{
   users = signal<User[]>([]);
+  isLinking = false;
   private userService = inject(UserService)
+  protected readonly currentUser = this.userService.currentUser;   // signal qui est partager de doctorLayout
 
   ngOnInit(): void {
-    this.getAllUsers();
+    this.getAllPatient();
     console.log(this.users);
+    console.log("CURRENT USER via list patient", this.currentUser())
   }
 
-  getAllUsers() {
-  this.userService.getAllUser().subscribe({
-    next: (users) => this.users.set(users),
-    error: (err) => {
-      console.error('Erreur de récupération des patients: ', err);
-    }
-  });
-}
+  getAllPatient() {
+    this.userService.getAllPatient().subscribe({
+      next: (users) => this.users.set(users),
+      error: (err) => {
+        console.error('Erreur de récupération des patients: ', err);
+      }
+    })
+  }
+
 }
