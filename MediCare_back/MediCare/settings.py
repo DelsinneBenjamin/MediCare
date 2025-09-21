@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'appointment',
     'location',
     'rest_framework',
+    'drf_yasg',
     'rest_framework_simplejwt',
     'corsheaders',
 ]
