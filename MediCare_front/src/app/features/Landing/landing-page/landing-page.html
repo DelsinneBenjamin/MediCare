@@ -1,41 +1,82 @@
 <app-navbar></app-navbar>
+
 <!-- Hero Content -->
-<section class="flex flex-col items-center justify-center text-center py-20 px-6">
-  <h2 class="text-4xl md:text-5xl font-bold mb-6">Simplifiez la gestion de vos soins</h2>
-  <p class="text-gray-600 mb-8 max-w-xl">MediCare vous aide à gérer vos rendez-vous, dossiers patients et informations médicales en toute simplicité.</p>
-  <a href="/signup" class="bg-blue-600 text-white px-6 py-3 rounded text-lg hover:bg-blue-500 transition-colors">Commencer maintenant</a>
+<section class="flex flex-col items-center justify-center text-center py-20 px-6 bg-gradient-to-r from-blue-50 to-blue-100">
+  <h2 class="text-4xl md:text-5xl font-bold text-blue-800 mb-6">Simplifiez la gestion de vos soins</h2>
+  <p class="text-gray-600 mb-8 max-w-xl">MediCare vous aide à gérer vos rendez-vous, dossiers patients et informations médicales en toute sérénité.</p>
+  <a href="/signup" class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition-colors shadow-md">Commencer maintenant</a>
 </section>
 
 <!-- About Section -->
-<section id="about" class="bg-gray-100 py-20 px-6 text-center">
-  <h3 class="text-3xl font-semibold mb-6">À propos de MediCare</h3>
-  <p class="max-w-2xl mx-auto text-gray-700">
-    MediCare est une application conçue pour les professionnels de santé et leurs patients.
-    Gérez vos rendez-vous, dossiers médicaux et communications en toute sécurité et facilement.
+<section id="about" class="bg-white py-20 px-6 text-center">
+  <h3 class="text-3xl font-semibold text-blue-700 mb-6">À propos de MediCare</h3>
+  <p class="max-w-2xl mx-auto text-gray-600 leading-relaxed">
+    MediCare est une plateforme pensée pour les <span class="font-semibold">professionnels de santé</span> et leurs patients.<br>
+    Gérez vos rendez-vous, dossiers médicaux et communications en toute sécurité, simplicité et efficacité.
   </p>
 </section>
 
 <!-- Features Section -->
-<section id="features" class="py-20 px-6 text-center">
-  <h3 class="text-3xl font-semibold mb-10">Fonctionnalités clés</h3>
+<section id="features" class="py-20 px-6 bg-blue-50 text-center">
+  <h3 class="text-3xl font-semibold text-blue-700 mb-10">Fonctionnalités clés</h3>
   <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-    <div class="p-6 bg-white rounded-lg shadow">
-      <h4 class="font-bold text-xl mb-2">Rendez-vous faciles</h4>
-      <p class="text-gray-600">Planifiez et suivez vos rendez-vous en quelques clics.</p>
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <div class="text-blue-500 mb-3">
+        <i class="fas fa-calendar-check text-3xl"></i>
+      </div>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">Rendez-vous faciles</h4>
+      <p class="text-gray-600">Planifiez et suivez vos consultations en quelques clics.</p>
     </div>
-    <div class="p-6 bg-white rounded-lg shadow">
-      <h4 class="font-bold text-xl mb-2">Dossiers patients</h4>
-      <p class="text-gray-600">Accédez et gérez les informations patients rapidement et en toute sécurité.</p>
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <div class="text-blue-500 mb-3">
+        <i class="fas fa-file-medical text-3xl"></i>
+      </div>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">Dossiers patients</h4>
+      <p class="text-gray-600">Un accès rapide et sécurisé aux informations médicales de vos patients.</p>
     </div>
-    <div class="p-6 bg-white rounded-lg shadow">
-      <h4 class="font-bold text-xl mb-2">Notifications & rappels</h4>
-      <p class="text-gray-600">Recevez des alertes pour les rendez-vous et suivis médicaux importants.</p>
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <div class="text-blue-500 mb-3">
+        <i class="fas fa-bell text-3xl"></i>
+      </div>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">Notifications & rappels</h4>
+      <p class="text-gray-600">Recevez des alertes de suivi personnalisées et fiables.</p>
     </div>
   </div>
 </section>
 
+<!-- Doctors Section -->
+<section id="doctors" class="py-20 px-6 bg-white text-center">
+  <h3 class="text-3xl font-semibold text-blue-700 mb-10">Nos médecins</h3>
+  <p class="text-gray-600 mb-12 max-w-2xl mx-auto">Découvrez nos spécialistes disponibles et prenez rendez-vous selon leurs disponibilités.</p>
+  <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    
+    <!-- Exemple carte docteur -->
+    <div class="bg-blue-50 rounded-xl shadow p-6 hover:shadow-lg transition flex flex-col items-center">
+      <img src="https://via.placeholder.com/100" alt="Dr Dupont" class="rounded-full w-24 h-24 border-4 border-white shadow -mt-12 mb-4">
+      <h4 class="font-bold text-xl text-blue-800">Dr. Jean Dupont</h4>
+      <p class="text-gray-600 mb-4">Cardiologue</p>
+      <a href="/doctor/1" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-500 transition-colors shadow-md text-sm">Voir profil & disponibilité</a>
+    </div>
+    
+    <div class="bg-blue-50 rounded-xl shadow p-6 hover:shadow-lg transition flex flex-col items-center">
+      <img src="https://via.placeholder.com/100" alt="Dr Martin" class="rounded-full w-24 h-24 border-4 border-white shadow -mt-12 mb-4">
+      <h4 class="font-bold text-xl text-blue-800">Dr. Alice Martin</h4>
+      <p class="text-gray-600 mb-4">Dermatologue</p>
+      <a href="/doctor/2" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-500 transition-colors shadow-md text-sm">Voir profil & disponibilité</a>
+    </div>
+    
+    <div class="bg-blue-50 rounded-xl shadow p-6 hover:shadow-lg transition flex flex-col items-center">
+      <img src="https://via.placeholder.com/100" alt="Dr Ahmed" class="rounded-full w-24 h-24 border-4 border-white shadow -mt-12 mb-4">
+      <h4 class="font-bold text-xl text-blue-800">Dr. Karim Ahmed</h4>
+      <p class="text-gray-600 mb-4">Pédiatre</p>
+      <a href="/doctor/3" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-500 transition-colors shadow-md text-sm">Voir profil & disponibilité</a>
+    </div>
+
+  </div>
+</section>
+
 <!-- Contact Section -->
-<section id="contact" class="bg-gray-100 py-20 px-6 text-center">
-  <h3 class="text-3xl font-semibold mb-6">Contactez-nous</h3>
-  <p class="text-gray-700 mb-6">Pour toute question, envoyez-nous un email à <a href="mailto:contact@medicare.com" class="text-blue-600 hover:underline">contact@medicare.com</a></p>
+<section id="contact" class="bg-blue-50 py-20 px-6 text-center">
+  <h3 class="text-3xl font-semibold text-blue-700 mb-6">Contactez-nous</h3>
+  <p class="text-gray-600 mb-6">Pour toute question ou assistance, écrivez-nous à <a href="mailto:contact@medicare.com" class="text-blue-600 font-semibold hover:underline">contact@medicare.com</a></p>
 </section>

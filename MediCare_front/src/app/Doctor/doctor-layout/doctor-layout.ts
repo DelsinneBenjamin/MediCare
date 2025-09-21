@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
 import { UserService } from '../../core/services/user-service';
-import { DoctorService } from '../../core/services/doctor-service';
+import { Profile } from '../../shared/components/profile/profile';
 
 @Component({
   selector: 'app-doctor-layout',
@@ -18,12 +18,13 @@ export class DoctorLayout implements OnInit{
   private userService = inject(UserService)
   private readonly router = inject(Router)
   protected readonly currentUser = this.userService.currentUser;
-  
+
    ngOnInit(): void {
     this.getCurrentUser();
     console.log("CURRENT USER DLAYOUT",this.currentUser())
+    console.log("CurentUser",this.currentUser())
    }
-
+  
   getCurrentUser() {
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
@@ -34,8 +35,6 @@ export class DoctorLayout implements OnInit{
       }
     });
   }
-
-
 
   logout() {
     this.authService.logout();

@@ -43,4 +43,6 @@ export class UserService {
   getCurrentUserId(): number | null {
     return this.currentUser()?.id ?? null;
   }
+
 }
+

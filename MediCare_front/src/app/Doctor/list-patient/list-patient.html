@@ -25,9 +25,9 @@
             <td class="px-5 py-4 text-gray-600">{{ user.patient?.nationnal_number }}</td>
             <td class="px-5 py-4">
               <button 
-                [disabled]="isLinking"
+                (click)=linkPatient(user.id)
                 class="px-3 py-1.5 text-sm font-medium rounded-md bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                @if (!isLinking) {
+                @if (!linking()) {
                   <span>Lier au médecin</span>
                 } @else {
                   <span class="flex items-center">
@@ -42,6 +42,7 @@
             </td> 
           </tr>
         }
+
       } @else {
         <tr>
           <td class="px-5 py-8 text-center text-gray-500 italic" colspan="6">Aucun patient trouvé</td>

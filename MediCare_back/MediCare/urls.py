@@ -16,13 +16,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from CustomUser.views import UserViewSet, DoctorViewSet, PatientViewSet
+from ordonnance.views import OrdonnanceViewSet
+
+router = DefaultRouter()
+router.register('users', UserViewSet, basename='user')
+router.register('doctors', DoctorViewSet, basename='doctor')
+router.register('patients', PatientViewSet, basename='patient')
+router.register('ordonnances', OrdonnanceViewSet, basename='ordonnance')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users/', include('CustomUser.urls')),
-    path('api/appointment/', include('appointment.urls')),
-    path('api/ordonnance/', include('ordonnance.urls')),
+
+    # JWT Auth
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # DRF ViewSets
+    path('api/', include(router.urls)),
 ]

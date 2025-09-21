@@ -1,44 +1,26 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Ordonnance
-from .serializer import OrdonnanceSerializer, OrdonnanceCreateUpdateSerializer
+from .models import Medicament, Ordonnance
+from .serializer import (
+    MedicamentSerializer,
+    OrdonnanceSerializer,
+    OrdonnanceCreateUpdateSerializer,
+)
 
 
-@api_view(['GET'])
-def list_ordonnances(request):
-    ordos = Ordonnance.objects.all()
-    serializer = OrdonnanceSerializer(ordos, many=True)
-    return Response(serializer.data)
+class MedicamentViewSet(viewsets.ModelViewSet):
+    queryset = Medicament.objects.all()
+    serializer_class = MedicamentSerializer
+    permission_classes = [IsAuthenticated]
 
-@api_view(['POST'])
-def create_ordonnance(request):
-    serializer = OrdonnanceCreateUpdateSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-def retrieve_ordonnance(request, pk):
-    ordo = Ordonnance.objects.get(pk=pk)
-    serializer = OrdonnanceSerializer(ordo)
-    return Response(serializer.data)
+class OrdonnanceViewSet(viewsets.ModelViewSet):
+    queryset = Ordonnance.objects.all()
+    permission_classes = [IsAuthenticated]
 
-@api_view(['PUT', 'PATCH'])
-def update_ordonnance(request, pk):
-    ordo = Ordonnance.objects.get(pk=pk)
-    serializer = OrdonnanceCreateUpdateSerializer(ordo, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['DELETE'])
-def delete_ordonnance(request, pk):
-    ordo = Ordonnance.objects.get(pk=pk)
-    ordo.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_serializer_class(self):
+        #ici j'ai du trouver un moyen pour utiliser mon serializer pour CreateUpdateSerializer
+        if self.action in ["create", "update", "partial_update"]:
+            return OrdonnanceCreateUpdateSerializer
+        return OrdonnanceSerializer

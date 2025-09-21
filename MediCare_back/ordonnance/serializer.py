@@ -31,6 +31,14 @@ class OrdonnanceCreateUpdateSerializer(serializers.ModelSerializer):
         model = Ordonnance
         fields = ['id', 'date_o', 'contentReport_o', 'medicaments']
 
+    #A savoir : lorsqu'on mets validate_ dans le nom d'une fonction, DRF reconnais automatiquement et l'appelera lorsqu'on fera un
+    # serializer.is_valid... , cette fonction m'accepter un médicament uniquement s'il existe.. sinon bah il existe pas lol
+    def validate_medicaments(self, value):
+        for med in value:
+            if not Medicament.objects.filter(id=med['id']).exists():
+                raise serializers.ValidationError(f"Médicament avec id={med['id']} inexistant.")
+        return value
+
     def create(self, validated_data):
         meds_data = validated_data.pop('medicaments', [])
         ordonnance = Ordonnance.objects.create(**validated_data)

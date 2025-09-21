@@ -24,7 +24,7 @@ export class DoctorService {
         doctor_id: doctor
       };
 
-      return this.http.post(`${this.apiUrl}/link-patient-doctor/`, payload, { headers });
+      return this.http.post(`${this.apiUrl}/link/`, payload, { headers });
     }
 
 }

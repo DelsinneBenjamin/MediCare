@@ -1,44 +1,25 @@
-from django.shortcuts import render
-
-# Create your views here.
-# views.py
-from rest_framework.decorators import api_view, permission_classes
+# appointment/views.py
+from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
 from .models import Appointments
 from .serializer import AppointmentsSerializer
 
-@api_view(['GET'])
-def list_appointments(request):
-    appointments = Appointments.objects.all()
-    serializer = AppointmentsSerializer(appointments, many=True)
-    return Response(serializer.data)
+class AppointmentViewSet(viewsets.ModelViewSet):
+    queryset = Appointments.objects.all()
+    serializer_class = AppointmentsSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-@api_view(['POST'])
-def create_appointment(request):
-    serializer = AppointmentsSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-def retrieve_appointment(request, pk):
-    appointment = Appointments.objects.get(pk=pk)
-    serializer = AppointmentsSerializer(appointment)
-    return Response(serializer.data)
-
-@api_view(['PUT', 'PATCH'])
-def update_appointment(request, pk):
-    appointment = Appointments.objects.get(pk=pk)
-    serializer = AppointmentsSerializer(appointment, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
+    # Filtrer les rendez-vous par patient
+    @action(detail=False, methods=['get'], url_path='by-patient/(?P<patient_id>[^/.]+)')
+    def by_patient(self, request, patient_id=None):
+        appointments = self.queryset.filter(patient_id=patient_id)
+        serializer = self.get_serializer(appointments, many=True)
         return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['DELETE'])
-def delete_appointment(request, pk):
-    appointment = Appointments.objects.get(pk=pk)
-    appointment.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    # Filtrer les rendez-vous par docteur
+    @action(detail=False, methods=['get'], url_path='by-doctor/(?P<doctor_id>[^/.]+)')
+    def by_doctor(self, request, doctor_id=None):
+        appointments = self.queryset.filter(doctor_id=doctor_id)
+        serializer = self.get_serializer(appointments, many=True)
+        return Response(serializer.data)

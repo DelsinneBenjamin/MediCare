@@ -6,13 +6,16 @@ import {AddPatient} from './Doctor/add-patient/add-patient';
 import { DoctorLayout } from './Doctor/doctor-layout/doctor-layout';
 import { PatientLayout } from './Patient/patient-layout/patient-layout';
 import { ListOrdonnance } from './Patient/list-ordonnance/list-ordonnance';
+import { Profile } from './shared/components/profile/profile';
 
 
 export const routes: Routes = [
     { path: '', component: LandingPage, pathMatch: 'full' },
     { path: 'login', component: Login },
-
+    { path: 'profile', component: Profile},
     { path: 'doctor', component: DoctorLayout, children: [
+        { path: '', redirectTo: 'profile', pathMatch: 'full' },
+        {path: 'profile', component: Profile},
         {path: 'add-patient', component: AddPatient },
         {path: 'list-patient', component: ListPatient },
       ]},

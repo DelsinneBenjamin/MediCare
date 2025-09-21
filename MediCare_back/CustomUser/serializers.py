@@ -1,9 +1,7 @@
-from rest_framework import serializers
 from django.contrib.auth import authenticate
-from CustomUser.models import CustomUser, Doctor, Patient
-
 from rest_framework import serializers
 from .models import CustomUser, Doctor, Patient
+from .user_service import create_user_with_profile
 
 
 class DoctorSerializer(serializers.ModelSerializer):
@@ -16,7 +14,6 @@ class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = ['nationnal_number']
-
 
 class UserSerializer(serializers.ModelSerializer):
     doctor = DoctorSerializer(required=False)
@@ -37,6 +34,11 @@ class UserSerializer(serializers.ModelSerializer):
             data['patient'] = PatientSerializer(instance.patient).data
             data.pop('doctor', None)
         return data
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+        return instance
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -76,22 +78,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        password = validated_data.pop('password')
-        profile_data = validated_data.pop('profile_data')
-        role = validated_data.pop('role')
-
-        # Créer le user
-        user = CustomUser(**validated_data, role=role)
-        user.set_password(password)
-        user.save()
-
-        # Créer le profil correspondant
-        if role == 'doctor':
-            Doctor.objects.create(user=user, **profile_data)
-        else:
-            Patient.objects.create(user=user, **profile_data)
-
-        return user
+        return create_user_with_profile(validated_data)
 
 
 
@@ -109,37 +96,3 @@ class LoginSerializer(serializers.Serializer):
 
         data["user"] = user
         return data
-
-class LinkPatientDoctorSerializer(serializers.Serializer):
-    patient_id = serializers.IntegerField()
-    doctor_id = serializers.IntegerField()
-
-    def validate(self, data):
-        patient_id = data.get('patient_id')
-        doctor_id = data.get('doctor_id')
-
-        try:
-            patient = Patient.objects.get(user_id=patient_id)
-        except Patient.DoesNotExist:
-            raise serializers.ValidationError({'patient_id': 'Patient non trouvé.'})
-
-        try:
-            doctor = Doctor.objects.get(user_id=doctor_id)
-        except Doctor.DoesNotExist:
-            raise serializers.ValidationError({'doctor_id': 'Doctor non trouvé.'})
-
-        data['patient'] = patient
-        data['doctor'] = doctor
-        return data
-
-    def create(self, validated_data):
-        patient = validated_data['patient']
-        doctor = validated_data['doctor']
-
-        # Ajouter le patient au docteur (relation ManyToMany)
-        doctor.patients.add(patient)
-        doctor.save()
-
-        return {
-            'message': f'Patient {patient.user.get_full_name()} lié au Docteur {doctor.user.get_full_name()}.'
-        }
