@@ -17,24 +17,30 @@ export class DoctorLayout implements OnInit{
   private authService = inject(AuthService)
   private userService = inject(UserService)
   private readonly router = inject(Router)
+  
   protected readonly currentUser = this.userService.currentUser;
+  protected readonly currendId = this.userService.currentId;
 
    ngOnInit(): void {
     this.getCurrentUser();
-    console.log("CURRENT USER DLAYOUT",this.currentUser())
-    console.log("CurentUser",this.currentUser())
    }
   
   getCurrentUser() {
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
-        this.userService.setCurrentUser(user);
+       this.userService.setCurrentUser(user);
+   
+        console.log("CurentUser ICI",this.currentUser(),
+        console.log("CurentID ICI",this.currendId())
+      )
+
       },
       error: (err) => {
         console.error('Erreur récupération utilisateur :', err);
       }
     });
   }
+
 
   logout() {
     this.authService.logout();

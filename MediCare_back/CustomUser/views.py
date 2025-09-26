@@ -1,5 +1,5 @@
 from rest_framework import status, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -23,14 +23,21 @@ from ordonnance.serializer import OrdonnanceSerializer
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
-    @action(detail=False, methods=['get'], url_path='me')
+
+    #C'est une méthode du DRF qui permet de passer des informations supplémentaires au serializer, des types, des données,.... ici isLinked
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+    @action(detail=False, methods=['get'], url_path='me', permission_classes = [IsAuthenticated])
     def me(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], url_path='by-role/(?P<role>[^/.]+)')
+    @action(detail=False, methods=['get'], url_path='by-role/(?P<role>[^/.]+)', permission_classes = [IsAuthenticated])
     def users_by_role(self, request, role=None):
         if role == 'doctor':
             users = CustomUser.objects.filter(doctor__isnull=False)
@@ -65,14 +72,21 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(data, status=status.HTTP_200_OK)
 
-
 # ============== DoctorViewSet =============
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.filter(doctor__isnull=False)
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
 
-    @action(detail=True, methods=['post'], url_path='link')
+    #Pour Swagger, je suis obliger de définir un create car sinon il ne sait pas quel serializer utiliser..
+    #donc lorsque je souhaite crée un docteur, il va d'office aller consulter celui de Register..
+    #Pourquoi faire ça et pas mettre en ReadOnlyViewSet? car je perdrais mon CRUD de base..
+    def create(self, request, *args, **kwargs):
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'], url_path='link', permission_classes = [IsAuthenticated])
     def link_patient(self, request, pk=None):
         patient_id = request.data.get('patient_id')
         if not patient_id:
@@ -85,10 +99,10 @@ class DoctorViewSet(viewsets.ModelViewSet):
 
         return Response({
             'message': f'Patient lié au docteur {doctor}.',
-            'doctor': UserSerializer(doctor).data
+            'doctor': UserSerializer(doctor.user).data
         }, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post'], url_path='unlink_patient')
+    @action(detail=True, methods=['post'], url_path='unlink_patient', permission_classes = [IsAuthenticated])
     def unlink_patient_action(self, request, pk=None):
         patient_id = request.data.get('patient_id')
         if not patient_id:
@@ -103,14 +117,14 @@ class DoctorViewSet(viewsets.ModelViewSet):
 
         return Response({'message': 'Lien supprimé'}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['get'])
-    def get_patients(self, request, pk=None):
+    @action(detail=True, methods=['get'], permission_classes = [IsAuthenticated])
+    def get_patients(self, request, pk=None, ):
         doctor = self.get_object().doctor  # profil docteur lié
         patients = doctor.patients.all()
-        serializer = PatientSerializer(patients, many=True)
+        serializer = UserSerializer(patients, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'], url_path='ordonnances')
+    @action(detail=True, methods=['get'], url_path='ordonnances', permission_classes = [IsAuthenticated])
     def get_ordonnances(self, request, pk=None):
         doctor = self.get_object().doctor
         ordonnances = doctor.ordonnances.all()
@@ -124,14 +138,14 @@ class PatientViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-    @action(detail=True, methods=['get'], url_path='doctors')
+    @action(detail=True, methods=['get'], url_path='doctors', permission_classes = [IsAuthenticated])
     def get_doctors(self, request, pk=None):
         patient = self.get_object().patient
         doctors = patient.doctors.all()
         serializer = DoctorSerializer(doctors, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'], url_path='prescriptions')
+    @action(detail=True, methods=['get'], url_path='prescriptions', permission_classes = [IsAuthenticated])
     def get_ordonnances(self, request, pk=None):
         patient = self.get_object().patient
         ordonnances = patient.prescriptions.all()

@@ -1,7 +1,4 @@
-from jinja2.idtracking import VAR_LOAD_ALIAS
 from rest_framework.exceptions import ValidationError
-
-import ordonnance
 from CustomUser.models import CustomUser, Doctor, Patient
 
 
@@ -23,7 +20,7 @@ def create_user_with_profile(validated_data):
 
 
 def link_patient_doctor(patient_id: int, doctor_id: int) -> Doctor:
-    #Lie un patient à un docteur + verif
+    # Lie un patient à un docteur + verif
     try:
         patient = Patient.objects.get(user_id=patient_id)
     except Patient.DoesNotExist:
@@ -32,15 +29,18 @@ def link_patient_doctor(patient_id: int, doctor_id: int) -> Doctor:
     try:
         doctor = Doctor.objects.get(user_id=doctor_id)
     except Doctor.DoesNotExist:
-        raise ValidationError({"doctor_id": "Doctor non trouvé."})
+        raise ValidationError({"doctor_id": "Docteur non trouvé."})
+
+    user_patient = patient.user  # CustomUser lié au patient
 
     # Verif si le patient est pas déjà lié
-    if doctor.patients.filter(user_id=patient_id).exists():
+    if doctor.patients.filter(id=user_patient.id).exists():
         raise ValidationError({"non_field_errors": "Patient déjà lié à ce docteur."})
 
-    #Ici je vérifie que l'user ne prend pas un médecin qui à déjà la même spécialité (a qui il est déjà affilé)
+    # Ici je vérifie que l'user ne prend pas un médecin qui à déjà la même spécialité
+    # (a qui il est déjà affilé)
     same_speciality = Doctor.objects.filter(
-        patients=patient,
+        patients=user_patient,
         speciality=doctor.speciality
     ).exclude(user_id=doctor_id).exists()
 
@@ -49,20 +49,29 @@ def link_patient_doctor(patient_id: int, doctor_id: int) -> Doctor:
             f"Le patient a déjà un docteur spécialisé en : {doctor.speciality}"
         })
 
+    # Lie le patient au docteur
+    doctor.patients.add(user_patient)
+    doctor.save()
+
     return doctor
 
 
 def unlink_patient(patient_id: int, doctor_id: int):
+    # Récupère le patient et le docteur
     try:
         patient = Patient.objects.get(user_id=patient_id)
         doctor = Doctor.objects.get(user_id=doctor_id)
     except Patient.DoesNotExist:
         raise ValidationError({"patient_id": "Patient non trouvé"})
-    except  Doctor.DoesNotExist:
+    except Doctor.DoesNotExist:
         raise ValidationError({"doctor_id": "Docteur non trouvé"})
 
-    if not doctor.patients.filter(user_id=patient_id).exists():
-        raise ValidationError({"Le patient n'est pas lié à ce docteur"})
+    user_patient = patient.user  # CustomUser lié au patient
 
-    doctor.patients.remove(patient)
+    # Vérifie si le patient est bien lié avant de le retirer
+    if not doctor.patients.filter(id=user_patient.id).exists():
+        raise ValidationError({"non_field_errors": "Le patient n'est pas lié à ce docteur"})
+
+    # Supprime le patient du docteur
+    doctor.patients.remove(user_patient)
     doctor.save()

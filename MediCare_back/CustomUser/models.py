@@ -27,7 +27,7 @@ class Doctor(models.Model):
     inami_number = models.CharField(max_length=20)
 
     #Relation ManyToMany avec Patient : Un docteur peut avoir plusieurs patients et un patient peut avoir plusieurs docteurs
-    patients = models.ManyToManyField('Patient', related_name='doctors', blank=True)
+    patients = models.ManyToManyField(CustomUser, related_name='doctors', blank=True)
 
     # Un médecin peut travailler dans plusieurs sites
     sites = models.ManyToManyField(Site, related_name="doctor")

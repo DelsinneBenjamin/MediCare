@@ -1,30 +1,36 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { AuthService } from './auth-service';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { UserService } from './user-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DoctorService {
 
-  private apiUrl = 'http://localhost:8000/api/users';
+  private apiUrl = 'http://localhost:8000/api/doctors';
   
   private http = inject(HttpClient)
   private authService = inject(AuthService)
+  private userService = inject(UserService)
+
+  protected readonly doctorId = this.userService.currentId;
   
-  linkPatientToDoctor(patient: number | null, doctor: number | null): Observable<any> {
-      const headers = this.authService.getHeaders();
+  linkPatientToDoctor(patient: number | null): Observable<any> {
+    const headers = this.authService.getHeaders();
+    const currentDoctorId = this.userService.currentId();
 
-      // ici j'aurais pu faire, mais avoir un const me permet plus de flexibilité par la suite si je dois modifier etc..
-      // return this.http.post(`${this.apiUrl}/link-patient-doctor/`, {patient_id: patient,doctor_id: doctor}, { headers });
-
-      const payload = {
-        patient_id: patient,
-        doctor_id: doctor
-      };
-
-      return this.http.post(`${this.apiUrl}/link/`, payload, { headers });
+    if (!currentDoctorId) {
+      return throwError(() => new Error('Aucun médecin connecté.'));
     }
+
+    const payload = {
+      patient_id: patient,
+      doctor_id: currentDoctorId
+    };
+
+    return this.http.post(`${this.apiUrl}/${currentDoctorId}/link/`, payload, { headers });
+  }
 
 }

@@ -11,9 +11,29 @@ class DoctorSerializer(serializers.ModelSerializer):
 
 
 class PatientSerializer(serializers.ModelSerializer):
+    is_linked = serializers.SerializerMethodField()
+
     class Meta:
         model = Patient
-        fields = ['nationnal_number']
+        fields = ['nationnal_number', "is_linked"]
+
+    def get_is_linked(self, instance):
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
+            return False
+
+        try:
+            doctor = request.user.doctor
+        except Doctor.DoesNotExist:
+            return False
+
+        # Compare explicitement avec le CustomUser lié au patient
+        patient_user_id = instance.user.pk
+        # debug optionnel
+        # print("DEBUG doctor patients ids:", list(doctor.patients.values_list("id", flat=True)))
+        # print("DEBUG patient_user_id:", patient_user_id)
+
+        return doctor.patients.filter(pk=patient_user_id).exists()
 
 class UserSerializer(serializers.ModelSerializer):
     doctor = DoctorSerializer(required=False)
@@ -27,14 +47,16 @@ class UserSerializer(serializers.ModelSerializer):
     #Je l'utilise pour modifier ce que le JSON renvoie en fonction du role (je ne veux pas renvoyer les deux profils.. juste un)
     def to_representation(self, instance):
         data = super().to_representation(instance)
+        # IMPORTANT : passer le context au serializer imbriqué pour que get_is_linked
+        # puisse accéder à request (et autres données)
         if instance.role == 'doctor':
-            data['doctor'] = DoctorSerializer(instance.doctor).data
+            data['doctor'] = DoctorSerializer(instance.doctor, context=self.context).data
             data.pop('patient', None)
         elif instance.role == 'patient':
-            data['patient'] = PatientSerializer(instance.patient).data
+            # instance.patient est un Patient -> on passe context
+            data['patient'] = PatientSerializer(instance.patient, context=self.context).data
             data.pop('doctor', None)
         return data
-
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
         instance.save()
@@ -43,8 +65,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
-    doctor = DoctorSerializer(required=False)
-    patient = PatientSerializer(required=False)
+    doctor = DoctorSerializer(required=False, write_only=True)
+    patient = PatientSerializer(required=False, write_only=True)
 
     class Meta:
         model = CustomUser
