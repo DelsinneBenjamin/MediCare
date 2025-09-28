@@ -1,11 +1,10 @@
 import { Routes } from '@angular/router';
 import { Login } from './authentification/login/login';
 import { LandingPage } from './features/Landing/landing-page/landing-page';
-import {ListPatient} from './Doctor/list-patient/list-patient';
-import {AddPatient} from './Doctor/add-patient/add-patient';
-import { DoctorLayout } from './Doctor/doctor-layout/doctor-layout';
-import { PatientLayout } from './Patient/patient-layout/patient-layout';
-import { ListOrdonnance } from './Patient/list-ordonnance/list-ordonnance';
+import {ListPatient} from './Doctor/components/list-patient/list-patient';
+import { DoctorLayout } from './Doctor/components/doctor-layout/doctor-layout';
+import { PatientLayout } from './Patient/components/patient-layout/patient-layout';
+import { ListOrdonnance } from './Patient/components/list-ordonnance/list-ordonnance';
 import { Profile } from './shared/components/profile/profile';
 
 
@@ -16,7 +15,6 @@ export const routes: Routes = [
     { path: 'doctor', component: DoctorLayout, children: [
         { path: '', redirectTo: 'profile', pathMatch: 'full' },
         {path: 'profile', component: Profile},
-        {path: 'add-patient', component: AddPatient },
         {path: 'list-patient', component: ListPatient },
       ]},
 

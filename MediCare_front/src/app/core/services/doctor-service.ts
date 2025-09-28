@@ -33,4 +33,21 @@ export class DoctorService {
     return this.http.post(`${this.apiUrl}/${currentDoctorId}/link/`, payload, { headers });
   }
 
+  unlinkPatientOfDoctor(patient: number | null): Observable<any> {
+    const headers = this.authService.getHeaders();
+    const currentDoctorId = this.userService.currentId();
+
+    if (!currentDoctorId) {
+      return throwError(() => new Error('Aucun médecin connecté.'));
+    }
+
+    const payload = {
+      patient_id: patient,
+      doctor_id: currentDoctorId
+    };
+
+    return this.http.post(`${this.apiUrl}/${currentDoctorId}/unlink_patient/`, payload, { headers });
+
+  }
+
 }

@@ -25,15 +25,36 @@
             </td>
             <td class="px-5 py-4 text-gray-600">{{ user.patient?.nationnal_number }}</td>
             <td class="px-5 py-4">
-              <button 
-                (click)=linkPatient(user.id)
-                class="px-3 py-1.5 text-sm font-medium rounded-md bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  @if (!linking()) {
-                    @if (user?.patient?.is_linked == false){
-                      <span>Lier au médecin</span>
-                    } @else {
-                      <span>Déjà au médecin</span>
-                    }
+
+
+
+
+              @if (user?.patient?.is_linked == true) {
+              <button
+                (click)="unlinkPatient(user.id)"
+                class="px-3 py-1.5 text-sm font-medium rounded-md bg-red-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                [disabled]="linkingPatientId() === user.id">
+
+                @if (linkingPatientId() !== user.id) {
+                  <span>Délié</span>
+                } @else {
+                  <span class="flex items-center">
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Déliaison en cours...
+                  </span>
+                }
+              </button>
+            } @else {
+              <button
+                (click)="linkPatient(user.id)"
+                class="px-3 py-1.5 text-sm font-medium rounded-md bg-green-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                [disabled]="linkingPatientId() === user.id">
+
+                @if (linkingPatientId() !== user.id) {
+                  <span>Lier au médecin</span>
                 } @else {
                   <span class="flex items-center">
                     <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -43,13 +64,19 @@
                     Liaison en cours...
                   </span>
                 }
-              </button> 
-            </td> 
+              </button>
+            }
+            </td>
+            
+            
+            
+
               @if (user?.patient?.is_linked) {
                 <td class="px-5 py-4 text-gray-600">✅</td>
               } @else {
                 <td class="px-5 py-4 text-gray-600">❌</td>
               }
+
           </tr>
         }
 

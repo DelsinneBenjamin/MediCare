@@ -1,9 +1,9 @@
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { AuthService } from '../../core/services/auth-service';
-import { UserService } from '../../core/services/user-service';
-import { Profile } from '../../shared/components/profile/profile';
+import { AuthService } from '../../../core/services/auth-service';
+import { UserService } from '../../../core/services/user-service';
+import { Profile } from '../../../shared/components/profile/profile';
 
 @Component({
   selector: 'app-doctor-layout',

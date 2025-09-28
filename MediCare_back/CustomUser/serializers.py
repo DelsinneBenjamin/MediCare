@@ -70,7 +70,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'password', 'role', 'doctor', 'patient')
+        fields = ('id','first_name', 'last_name', 'email', 'password', 'role', 'doctor', 'patient')
 
     def validate(self, data):
         role = data.get('role')
@@ -93,6 +93,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         for field in required_fields:
             if field not in profile_data or not profile_data[field]:
                 raise serializers.ValidationError({role: f'Le champ "{field}" est obligatoire.'})
+
+        data.username = data.first_name + data.last_name
 
         # On met le profil dans validated_data pour create()
         data['profile_data'] = profile_data

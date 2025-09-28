@@ -1,11 +1,17 @@
 from django.db import models
 
+from CustomUser.models import Patient, Doctor
+
+
 # Create your models here.
 class Medicament(models.Model):
     name_m = models.TextField()
 
 
 class Ordonnance(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="ordonnances")
+    doctor = models.ForeignKey(Doctor, on_delete=models.PROTECT, related_name="ordonnances")
+
     date_o = models.DateField()
     contentReport_o = models.TextField()
     #through me fait avoir la relation avec la table intermediaire écris en dessous

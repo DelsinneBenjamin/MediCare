@@ -1,7 +1,7 @@
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { UserService } from '../../core/services/user-service';
-import { DoctorService } from '../../core/services/doctor-service';
+import { UserService } from '../../../core/services/user-service';
+import { DoctorService } from '../../../core/services/doctor-service';
 
 @Component({
   selector: 'app-list-patient',
@@ -16,7 +16,7 @@ export class ListPatient implements OnInit{
   private doctorService = inject(DoctorService)
 
   users = signal<User[]>([]);
-  linking= signal<boolean>(false);
+  linkingPatientId= signal<number | null>(null);
 
   protected readonly currentUser = this.userService.currentUser;   // signal qui est partager de doctorLayout
   protected readonly currentId = this.userService.currentId;
@@ -45,22 +45,38 @@ export class ListPatient implements OnInit{
       console.error("Aucun docteur courrant (probleme currentUser)");
       return;
     }
-    this.linking.set(true);
+
+    this.linkingPatientId.set(patientId);
 
       this.doctorService.linkPatientToDoctor(patientId).subscribe({
         next: (res) => {
           console.log(`Patient ${patientId} lié au docteur ${this.currentId()} avec succès`, res);
-          this.linking.set(true);
+          this.linkingPatientId.set(null);
           this.getAllPatient()
         },
         error: (err) => {
-          this.linking.set(false);
-        },
-        complete: () => {
-          this.linking.set(false);
-          this.isSucess = true
+          this.linkingPatientId.set(null);
         }
       });
+  }
+
+  unlinkPatient(patientId: number){
+    if(!this.currentId){
+      console.error("Aucun docteur courrant(probleme currentUser");
+      return;
+    }
+    
+    this.doctorService.unlinkPatientOfDoctor(patientId).subscribe({
+      next: (res) => {
+        console.log(`Patient ${patientId} délié du docteur ${this.currentId()} avec succès`, res);
+        this.getAllPatient();
+        this.linkingPatientId.set(null);
+      },
+      error: (err) => {
+        this.linkingPatientId.set(null)
+      }
+    })
+
   }
 
 }
