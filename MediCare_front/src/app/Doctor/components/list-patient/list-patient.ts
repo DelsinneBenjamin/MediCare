@@ -17,6 +17,8 @@ export class ListPatient implements OnInit{
 
   users = signal<User[]>([]);
   linkingPatientId= signal<number | null>(null);
+  prevUrl: string | null = null;
+  nextUrl: string | null = null;
 
   protected readonly currentUser = this.userService.currentUser;   // signal qui est partager de doctorLayout
   protected readonly currentId = this.userService.currentId;
@@ -27,17 +29,21 @@ export class ListPatient implements OnInit{
     this.getAllPatient();
   }
 
-  getAllPatient() {
-  this.userService.getAllPatient().subscribe({
-    next: (users) => {
-      this.users.set(users);
-      console.log("Liste des patients:", this.users());
+  getAllPatient(url?: string) {
+  this.userService.getAllPatient(url).subscribe({  
+    next: (response) => {
+      console.log("Réponse brute API:", response);
+      this.users.set(response.results);
+      this.prevUrl = response.previous;
+      this.nextUrl = response.next;
+      console.log("Patients mis à jour:", this.users());
     },
     error: (err) => {
       console.error('Erreur de récupération des patients: ', err);
     }
   })
 }
+
 
 
   linkPatient(patientId: number){
@@ -77,6 +83,18 @@ export class ListPatient implements OnInit{
       }
     })
 
+  }
+
+  goNext(): void {
+    if(this.nextUrl){
+      this.getAllPatient(this.nextUrl)
+    }
+  }
+
+  goPrev(): void {
+    if(this.prevUrl){
+      this.getAllPatient(this.prevUrl)
+    }
   }
 
 }

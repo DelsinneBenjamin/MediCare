@@ -12,8 +12,7 @@ export class LandingPage implements OnInit {
 
   private userService = inject(UserService)
   isOpen: boolean = false;
-  doctors: User[] = []
-
+  doctors: User[] = [];
 
   ngOnInit(): void {
     this.getDoctor();
@@ -21,8 +20,8 @@ export class LandingPage implements OnInit {
   
   getDoctor() {
   this.userService.getAllDoctor().subscribe({
-    next: (users) => {
-      this.doctors = users;
+    next: (result) => {
+      this.doctors = result;
       console.log(this.doctors)
     },
     error: (err) => {

@@ -86,5 +86,25 @@
         </tr>
       }
     </tbody>
+
+    <div class="flex justify-between mt-4">
+  </div>
+
   </table>
+</div>
+
+<div class="flex justify-center">
+  <button 
+      class="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+      (click)="goPrev()" 
+      [disabled]="!prevUrl">
+      Previous
+    </button>
+
+    <button 
+      class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+      (click)="goNext()" 
+      [disabled]="!nextUrl">
+      Next
+</button>
 </div>

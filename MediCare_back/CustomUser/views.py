@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from CustomUser.models import CustomUser
+from CustomUser.pagination import StandardResultsSetPagination
 from CustomUser.serializers import (
     RegisterSerializer, UserSerializer, DoctorSerializer,
     PatientSerializer, LoginSerializer
@@ -46,8 +47,11 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response({"detail": "Role invalide"}, status=400)
 
-        serializer = self.get_serializer(users, many=True)
-        return Response(serializer.data)
+        #Voir pagination.py pour comprendre ... je l'utiliserais souvent lorsque je devrais recup des list non trier par DRF
+        paginator = StandardResultsSetPagination()
+        page = paginator.paginate_queryset(users, request)
+        serializer = self.get_serializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     @action(detail=False, methods=['post'], url_path='register', permission_classes=[AllowAny])
     def register(self, request):
