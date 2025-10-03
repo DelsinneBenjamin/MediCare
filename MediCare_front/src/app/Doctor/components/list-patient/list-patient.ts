@@ -47,7 +47,7 @@ export class ListPatient implements OnInit{
 
 
   linkPatient(patientId: number){
-    if(!this.currentId){
+    if(!this.currentId()){
       console.error("Aucun docteur courrant (probleme currentUser)");
       return;
     }
@@ -67,7 +67,7 @@ export class ListPatient implements OnInit{
   }
 
   unlinkPatient(patientId: number){
-    if(!this.currentId){
+    if(!this.currentId()){
       console.error("Aucun docteur courrant(probleme currentUser");
       return;
     }
