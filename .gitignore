@@ -62,3 +62,4 @@ staticfiles/
 # Migration history (optional)
 **/migrations/*.pyc
 **/migrations/__pycache__/
+MediCare_back/CustomUser/__pycache__/__init__.cpython-313.pyc

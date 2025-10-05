@@ -2,11 +2,25 @@ import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { UserService } from '../../../core/services/user-service';
 import { DoctorService } from '../../../core/services/doctor-service';
+import { Filter, FilterOption } from '../../../shared/filter/filter';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-list-patient',
   standalone: true,
-  imports: [],
+  imports: [
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    Filter
+  ],
   templateUrl: './list-patient.html',
   styleUrl: './list-patient.css'
 })
@@ -15,34 +29,43 @@ export class ListPatient implements OnInit{
   private userService = inject(UserService)
   private doctorService = inject(DoctorService)
 
+  filterField$ = signal<string>('first_name');
+  filterValue$ = signal<string>('');
   users = signal<User[]>([]);
   linkingPatientId= signal<number | null>(null);
+
   prevUrl: string | null = null;
   nextUrl: string | null = null;
 
-  protected readonly currentUser = this.userService.currentUser;   // signal qui est partager de doctorLayout
+  protected readonly currentUser = this.userService.currentUser;
   protected readonly currentId = this.userService.currentId;
 
   isSucess = false;
 
+  filterOptions: FilterOption[] = [
+    { label: 'Prénom', value: 'first_name' },
+    { label: 'Nom', value: 'last_name' },
+    { label: 'Email', value: 'email' },
+    { label: 'Nationnal_number', value: 'patient__nationnal_number'}
+  ];
+  
+
   ngOnInit(): void {
-    this.getAllPatient();
+    this.getAllPatients();
   }
 
-  getAllPatient(url?: string) {
-  this.userService.getAllPatient(url).subscribe({  
-    next: (response) => {
-      console.log("Réponse brute API:", response);
-      this.users.set(response.results);
-      this.prevUrl = response.previous;
-      this.nextUrl = response.next;
-      console.log("Patients mis à jour:", this.users());
-    },
-    error: (err) => {
-      console.error('Erreur de récupération des patients: ', err);
-    }
-  })
-}
+   getAllPatients(url?: string) {
+    const filters: any = {};
+    const field = this.filterField$();
+    const value = this.filterValue$().trim();
+    if (field && value) filters[field] = value;
+
+    this.userService.getAllPatient(url, filters).subscribe(res => {
+      this.users.set(res.results);
+      this.prevUrl = res.previous;
+      this.nextUrl = res.next;
+    });
+  }
 
 
 
@@ -58,7 +81,7 @@ export class ListPatient implements OnInit{
         next: (res) => {
           console.log(`Patient ${patientId} lié au docteur ${this.currentId()} avec succès`, res);
           this.linkingPatientId.set(null);
-          this.getAllPatient()
+          this.getAllPatients()
         },
         error: (err) => {
           this.linkingPatientId.set(null);
@@ -75,7 +98,7 @@ export class ListPatient implements OnInit{
     this.doctorService.unlinkPatientOfDoctor(patientId).subscribe({
       next: (res) => {
         console.log(`Patient ${patientId} délié du docteur ${this.currentId()} avec succès`, res);
-        this.getAllPatient();
+        this.getAllPatients();
         this.linkingPatientId.set(null);
       },
       error: (err) => {
@@ -85,16 +108,17 @@ export class ListPatient implements OnInit{
 
   }
 
-  goNext(): void {
-    if(this.nextUrl){
-      this.getAllPatient(this.nextUrl)
-    }
+
+
+  goNext() { if (this.nextUrl) this.getAllPatients(this.nextUrl); }
+  goPrev() { if (this.prevUrl) this.getAllPatients(this.prevUrl); }
+
+
+  onFilterChanged(event: { field: string; value: string }) {
+    this.filterField$.set(event.field);
+    this.filterValue$.set(event.value);
+    this.getAllPatients();
   }
 
-  goPrev(): void {
-    if(this.prevUrl){
-      this.getAllPatient(this.prevUrl)
-    }
-  }
 
 }

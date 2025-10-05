@@ -3,6 +3,7 @@ from rest_framework.decorators import action, permission_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from django_filters.rest_framework import DjangoFilterBackend
 
 from CustomUser.models import CustomUser
 from CustomUser.pagination import StandardResultsSetPagination
@@ -22,9 +23,14 @@ from ordonnance.serializer import OrdonnanceSerializer
 
 # ============= UserViewSets ===============
 class UserViewSet(viewsets.ModelViewSet):
+    patient = PatientSerializer(read_only=True)
+    doctor = DoctorSerializer(read_only=True)
+
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['email', 'first_name', 'last_name', 'role', 'patient__nationnal_number']
 
 
     #C'est une méthode du DRF qui permet de passer des informations supplémentaires au serializer, des types, des données,.... ici isLinked
@@ -46,6 +52,9 @@ class UserViewSet(viewsets.ModelViewSet):
             users = CustomUser.objects.filter(patient__isnull=False)
         else:
             return Response({"detail": "Role invalide"}, status=400)
+
+        filter_backend = DjangoFilterBackend()
+        users = filter_backend.filter_queryset(request, users, self)
 
         #Voir pagination.py pour comprendre ... je l'utiliserais souvent lorsque je devrais recup des list non trier par DRF
         paginator = StandardResultsSetPagination()
@@ -79,7 +88,9 @@ class UserViewSet(viewsets.ModelViewSet):
 # ============== DoctorViewSet =============
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.filter(doctor__isnull=False)
-    serializer_class = UserSerializer
+    serializer_class = UserSerializerfilter_backends = [DjangoFilterBackend]
+    filterset_fields = ['inami_number', 'speciality','email', 'first_name', 'last_name','role']
+    search_fields = ['first_name', 'last_name', 'email', 'nationnal_number']
 
     #Pour Swagger, je suis obliger de définir un create car sinon il ne sait pas quel serializer utiliser..
     #donc lorsque je souhaite crée un docteur, il va d'office aller consulter celui de Register..
@@ -140,7 +151,11 @@ class DoctorViewSet(viewsets.ModelViewSet):
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.filter(patient__isnull=False)
     serializer_class = UserSerializer
+
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['nationnal_number','email', 'first_name', 'last_name', 'role']
+    search_fields = ['first_name', 'last_name', 'email', 'nationnal_number']
 
     @action(detail=True, methods=['get'], url_path='doctors', permission_classes = [IsAuthenticated])
     def get_doctors(self, request, pk=None):
