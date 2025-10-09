@@ -1,79 +1,187 @@
 <app-navbar></app-navbar>
 
-<!-- Hero Content -->
-<section class="flex flex-col items-center justify-center text-center py-20 px-6 bg-gradient-to-r from-blue-50 to-blue-100">
-  <h2 class="text-4xl md:text-5xl font-bold text-blue-800 mb-6">Simplifiez la gestion de vos soins</h2>
-  <p class="text-gray-600 mb-8 max-w-xl">MediCare vous aide à gérer vos rendez-vous, dossiers patients et informations médicales en toute sérénité.</p>
-  <a href="/signup" class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition-colors shadow-md">Commencer maintenant</a>
+<!-- Hero Section -->
+<section
+  class="flex flex-col items-center justify-center text-center py-24 px-6 bg-gradient-to-r from-blue-50 to-blue-100"
+>
+  <h1 class="text-5xl font-bold text-blue-800 mb-6">MediCare</h1>
+  <p class="text-gray-700 text-2xl mb-8">
+    Simplifiez la gestion de votre cabinet médical grâce à une plateforme
+    intuitive et moderne.
+  </p>
+  <a
+    href="/signup"
+    class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition-colors shadow-md"
+  >
+    Commencer maintenant
+  </a>
 </section>
 
 <!-- About Section -->
 <section id="about" class="bg-white py-20 px-6 text-center">
-  <h3 class="text-3xl font-semibold text-blue-700 mb-6">À propos de MediCare</h3>
-  <p class="max-w-2xl mx-auto text-gray-600 leading-relaxed">
-    MediCare est une plateforme pensée pour les <span class="font-semibold">professionnels de santé</span> et leurs patients.<br>
-    Gérez vos rendez-vous, dossiers médicaux et communications en toute sécurité, simplicité et efficacité.
+  <h2 class="text-3xl font-semibold text-blue-700 mb-4">
+    À propos de MediCare
+  </h2>
+  <p class="text-gray-600 text-xl max-w-3xl mx-auto leading-relaxed">
+    <strong>MediCare</strong> est une plateforme
+    <span class="font-semibold">fictive</span> développée dans le cadre d’un
+    <span class="font-semibold">projet de fin de formation</span> chez
+    <span class="font-semibold">TechnoFutur TIC</span>. <br /><br />
+    L’application repose sur une architecture moderne : un back-end conçu avec
+    <span class="font-semibold">Django REST Framework</span> et un front-end
+    développé en <span class="font-semibold">Angular</span>. Le projet est
+    déployé sur <span class="font-semibold">Render</span> (API) et
+    <span class="font-semibold">Vercel</span> (interface web).
   </p>
 </section>
 
 <!-- Features Section -->
 <section id="features" class="py-20 px-6 bg-blue-50 text-center">
-  <h3 class="text-3xl font-semibold text-blue-700 mb-10">Fonctionnalités clés</h3>
+  <h2 class="text-3xl font-semibold text-blue-700 mb-10">
+    Fonctionnalités principales
+  </h2>
+
   <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <div class="text-blue-500 mb-3">
+        <i class="fas fa-user-md text-3xl"></i>
+      </div>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">Gestion des patients</h4>
+      <p class="text-gray-600">
+        Créez, consultez et mettez à jour les dossiers médicaux de vos patients
+        en toute simplicité.
+      </p>
+    </div>
+
     <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
       <div class="text-blue-500 mb-3">
         <i class="fas fa-calendar-check text-3xl"></i>
       </div>
-      <h4 class="font-bold text-xl text-blue-700 mb-2">Rendez-vous faciles</h4>
-      <p class="text-gray-600">Planifiez et suivez vos consultations en quelques clics.</p>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">
+        Gestion des rendez-vous
+      </h4>
+      <p class="text-gray-600">
+        Planifiez et organisez vos consultations via une interface claire et
+        intuitive.
+      </p>
     </div>
+
     <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
       <div class="text-blue-500 mb-3">
-        <i class="fas fa-file-medical text-3xl"></i>
+        <i class="fas fa-file-prescription text-3xl"></i>
       </div>
-      <h4 class="font-bold text-xl text-blue-700 mb-2">Dossiers patients</h4>
-      <p class="text-gray-600">Un accès rapide et sécurisé aux informations médicales de vos patients.</p>
-    </div>
-    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
-      <div class="text-blue-500 mb-3">
-        <i class="fas fa-bell text-3xl"></i>
-      </div>
-      <h4 class="font-bold text-xl text-blue-700 mb-2">Notifications & rappels</h4>
-      <p class="text-gray-600">Recevez des alertes de suivi personnalisées et fiables.</p>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">
+        Gestion des ordonnances
+      </h4>
+      <p class="text-gray-600">
+        Rédigez et gérez vos ordonnances numériques de manière simple et
+        sécurisée.
+      </p>
     </div>
   </div>
 </section>
 
-<!-- Doctors Section -->
-<section id="doctors" class="py-20 px-6 bg-white text-center">
-  <h3 class="text-3xl font-semibold text-blue-700 mb-10">Nos médecins</h3>
-  <p class="text-gray-600 mb-12 max-w-2xl mx-auto">Découvrez nos spécialistes disponibles et prenez rendez-vous selon leurs disponibilités.</p>
-   @if (doctors) {
-     <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">  
-          @for (doctor of doctors; track doctor.id) {
-              <!-- Exemple carte docteur -->
-              <div class="bg-blue-50 rounded-2xl shadow-md p-6 hover:shadow-xl transition flex flex-col items-center relative">
-                <img 
-                  src="https://img.icons8.com/color/96/doctor-male--v1.png" 
-                  alt="Docteur" 
-                  class="rounded-full w-24 h-24 border-4 border-white shadow -mt-16 mb-4 bg-white"
-                >
-                <h4 class="font-bold text-xl text-blue-800">{{ doctor.username }}</h4>
-                <p class="text-gray-600 mb-4">{{ doctor.doctor?.speciality }}</p>
-                <a 
-                  href="/doctor/1" 
-                  class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-500 transition-colors shadow text-sm font-medium"
-                >
-                  Voir profil & disponibilité
-                </a>
-              </div>
-            }
+<!-- Demo Accounts Section -->
+<section id="demo" class="bg-white py-20 px-6 text-center">
+  <h2 class="text-3xl font-semibold text-blue-700 mb-8">
+    Comptes de démonstration
+  </h2>
+  <p class="text-gray-600 text-lg mb-10 max-w-2xl mx-auto">
+    Pour découvrir MediCare, vous pouvez vous connecter avec l’un des comptes de
+    test ci-dessous.
+  </p>
+
+  <div class="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+    <!-- Doctor Account -->
+    <div class="p-6 bg-blue-50 rounded-xl shadow hover:shadow-lg transition">
+      <div class="text-blue-600 mb-3">
+        <i class="fas fa-user-md text-3xl"></i>
       </div>
-    }
+      <h4 class="font-bold text-xl text-blue-700 mb-2">Compte Médecin</h4>
+      <p class="text-gray-600">
+        Accédez à la gestion complète des patients, des rendez-vous et des
+        ordonnances.
+      </p>
+      <div class="mt-4 text-left bg-white p-4 rounded-lg shadow-inner">
+        <p><span class="font-semibold">Email :</span> docteur@medicare.com</p>
+        <p><span class="font-semibold">Mot de passe :</span> medicare123</p>
+      </div>
+    </div>
+
+    <!-- Patient Account -->
+    <div class="p-6 bg-blue-50 rounded-xl shadow hover:shadow-lg transition">
+      <div class="text-blue-600 mb-3">
+        <i class="fas fa-user text-3xl"></i>
+      </div>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">Compte Patient</h4>
+      <p class="text-gray-600">
+        Explorez votre profil, consultez vos rendez-vous et vos ordonnances.
+      </p>
+      <div class="mt-4 text-left bg-white p-4 rounded-lg shadow-inner">
+        <p><span class="font-semibold">Email :</span> patient@medicare.com</p>
+        <p><span class="font-semibold">Mot de passe :</span> medicare123</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- Contact Section -->
-<section id="contact" class="bg-blue-50 py-20 px-6 text-center">
-  <h3 class="text-3xl font-semibold text-blue-700 mb-6">Contactez-nous</h3>
-  <p class="text-gray-600 mb-6">Pour toute question ou assistance, écrivez-nous à <a href="mailto:contact@medicare.com" class="text-blue-600 font-semibold hover:underline">contact@medicare.com</a></p>
+<!-- Objective Section -->
+<section id="objective" class="bg-blue-50 py-20 px-6 text-center">
+  <h2 class="text-3xl font-semibold text-blue-700 mb-6">Objectif du projet</h2>
+  <p class="text-gray-700 text-xl max-w-4xl mx-auto leading-relaxed">
+    Le projet <strong>MediCare</strong> a été conçu dans un objectif clair :
+    <span class="font-semibold text-blue-700"
+      >démontrer mes compétences techniques et mon autonomie complète</span
+    >
+    dans la création d’une application web moderne, de sa conception à son
+    déploiement.
+  </p>
+
+  <div class="mt-10 grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <div class="text-blue-500 mb-3">
+        <i class="fas fa-code text-3xl"></i>
+      </div>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">Compétences Backend</h4>
+      <p class="text-gray-600">
+        Développement d’une API REST complète avec
+        <strong>Django REST Framework</strong> : gestion sécurisée des
+        utilisateurs, authentification JWT, relations complexes et logique
+        métier.
+      </p>
+    </div>
+
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <div class="text-blue-500 mb-3">
+        <i class="fas fa-laptop-code text-3xl"></i>
+      </div>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">Compétences Frontend</h4>
+      <p class="text-gray-600">
+        Création d’une interface <strong>Angular</strong> responsive et
+        ergonomique, intégration avec l’API, gestion d’état et navigation fluide
+        entre les fonctionnalités.
+      </p>
+    </div>
+
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <div class="text-blue-500 mb-3">
+        <i class="fas fa-rocket text-3xl"></i>
+      </div>
+      <h4 class="font-bold text-xl text-blue-700 mb-2">Projet évolutif</h4>
+      <p class="text-gray-600">
+        Conçu pour être maintenable et extensible : ajout futur de tableaux de
+        bord, notifications en temps réel et intégration de services externes.
+      </p>
+    </div>
+  </div>
+
+  <p class="mt-12 text-gray-700 text-lg max-w-3xl mx-auto">
+    <strong>MediCare</strong> représente mon savoir-faire en
+    <span class="font-semibold">développement full-stack</span>, ma maîtrise des
+    outils modernes, et ma capacité à
+    <span class="font-semibold text-blue-700">mener un projet de A à Z</span> —
+    de la conception technique à la mise en production.
+  </p>
 </section>
+
+<app-footer></app-footer>

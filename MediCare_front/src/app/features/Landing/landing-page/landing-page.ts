@@ -1,10 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Navbar } from '../../../shared/components/navbar/navbar';
 import { UserService } from '../../../core/services/user-service';
+import { Footer } from '../../../shared/components/footer/footer';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [Navbar],
+  imports: [Navbar,Footer],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css'
 })

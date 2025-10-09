@@ -6,6 +6,7 @@ import { DoctorLayout } from './Doctor/components/doctor-layout/doctor-layout';
 import { PatientLayout } from './Patient/components/patient-layout/patient-layout';
 import { ListOrdonnance } from './Patient/components/list-ordonnance/list-ordonnance';
 import { Profile } from './shared/components/profile/profile';
+import { PatientManagement } from './Doctor/managePatient/patient-management/patient-management';
 
 
 export const routes: Routes = [
@@ -16,10 +17,12 @@ export const routes: Routes = [
         { path: '', redirectTo: 'profile', pathMatch: 'full' },
         {path: 'profile', component: Profile},
         {path: 'list-patient', component: ListPatient },
+        { path: 'patient-management/:patientId', component: PatientManagement },
+          
       ]},
 
       
     { path: 'patient', component: PatientLayout, children: [
-       {path: 'list-ordonnance', component: ListOrdonnance}
+      {path: 'list-ordonnance', component: ListOrdonnance}
     ]}
 ];

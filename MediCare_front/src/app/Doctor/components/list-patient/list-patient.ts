@@ -1,14 +1,15 @@
-import { Component, inject, input, OnInit, signal } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { UserService } from '../../../core/services/user-service';
 import { DoctorService } from '../../../core/services/doctor-service';
 import { Filter, FilterOption } from '../../../shared/filter/filter';
+import { Router, RouterLink } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+
 
 @Component({
   selector: 'app-list-patient',
@@ -28,11 +29,12 @@ export class ListPatient implements OnInit{
   
   private userService = inject(UserService)
   private doctorService = inject(DoctorService)
+  private router = inject(Router)
 
   filterField$ = signal<string>('first_name');
   filterValue$ = signal<string>('');
   users = signal<User[]>([]);
-  linkingPatientId= signal<number | null>(null);
+  linkingPatientId = signal<number | null>(null);
 
   prevUrl: string | null = null;
   nextUrl: string | null = null;
@@ -54,7 +56,7 @@ export class ListPatient implements OnInit{
     this.getAllPatients();
   }
 
-   getAllPatients(url?: string) {
+  getAllPatients(url?: string) {
     const filters: any = {};
     const field = this.filterField$();
     const value = this.filterValue$().trim();
@@ -65,6 +67,10 @@ export class ListPatient implements OnInit{
       this.prevUrl = res.previous;
       this.nextUrl = res.next;
     });
+  }
+
+  goToPatientManagement(patientId: number) {
+    this.router.navigate(['/doctor/patient-management', patientId]);
   }
 
 

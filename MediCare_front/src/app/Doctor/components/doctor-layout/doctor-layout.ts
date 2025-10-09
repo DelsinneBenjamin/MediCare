@@ -30,8 +30,8 @@ export class DoctorLayout implements OnInit{
       next: (user) => {
        this.userService.setCurrentUser(user);
    
-        console.log("CurentUser ICI",this.currentUser(),
-        console.log("CurentID ICI",this.currendId())
+        console.log("Docteur : ",this.currentUser(),
+        console.log("Docteur ID :",this.currendId())
       )
 
       },

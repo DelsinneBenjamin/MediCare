@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/core/services/patient-service.spec.ts", "src/app/core/services/patient-service.ts"],
+  "sourcesContent": ["import { TestBed } from '@angular/core/testing';\r\n\r\nimport { PatientService } from './patient-service';\r\n\r\ndescribe('PatientService', () => {\r\n  let service: PatientService;\r\n\r\n  beforeEach(() => {\r\n    TestBed.configureTestingModule({});\r\n    service = TestBed.inject(PatientService);\r\n  });\r\n\r\n  it('should be created', () => {\r\n    expect(service).toBeTruthy();\r\n  });\r\n});\r\n", "import { Injectable } from '@angular/core';\r\n\r\n@Injectable({\r\n  providedIn: 'root'\r\n})\r\nexport class PatientService {\r\n  \r\n}\r\n"],
+  "mappings": ";;;;;;;;;;AAAA;;;;ACAA;AAKO,IAAM,iBAAN,MAAMA,gBAAc;;AAAd,iBAAc,WAAA;EAH1B,WAAW;IACV,YAAY;GACb;GACY,cAAc;;;ADD3B,SAAS,kBAAkB,MAAK;AAC9B,MAAI;AAEJ,aAAW,MAAK;AACd,YAAQ,uBAAuB,CAAA,CAAE;AACjC,cAAU,QAAQ,OAAO,cAAc;EACzC,CAAC;AAED,KAAG,qBAAqB,MAAK;AAC3B,WAAO,OAAO,EAAE,WAAU;EAC5B,CAAC;AACH,CAAC;",
+  "names": ["PatientService"]
+}
