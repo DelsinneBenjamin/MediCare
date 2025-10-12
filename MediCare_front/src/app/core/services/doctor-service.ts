@@ -15,14 +15,11 @@ export class DoctorService {
   private authService = inject(AuthService)
   private userService = inject(UserService)
 
-  chosenPatientId = signal<number| null>(null);
-
   protected readonly doctorId = this.userService.currentId;
 
 
-  getPatient(id: number): Observable<User> {
+  getSelectedPatient(id: number): Observable<User> {
     const headers = this.authService.getHeaders();
-    this.chosenPatientId.set(id);
     return this.http.get<User>(`http://localhost:8000/api/users/${id}/`, { headers });
   }
   

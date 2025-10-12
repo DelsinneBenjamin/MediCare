@@ -70,7 +70,7 @@ export class ListPatient implements OnInit{
   }
 
   goToPatientManagement(patientId: number) {
-    this.router.navigate(['/doctor/patient-management', patientId]);
+    this.router.navigate(['/doctor/patient', patientId]);
   }
 
 
