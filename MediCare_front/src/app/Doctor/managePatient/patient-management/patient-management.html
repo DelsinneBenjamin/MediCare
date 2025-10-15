@@ -1,26 +1,32 @@
 @if (patient()) {
-  <div class="flex flex-col h-full">
-    <nav
-      class="flex items-center justify-between px-4 py-3 rounded-b-md bg-blue-50 shadow-sm"
-    >
-      <h2 class="text-lg font-semibold text-gray-800">
-        👤 {{ patient()?.username }} – {{ patient()?.email }}
-        – N° National : {{ patient()?.patient?.nationnal_number }}
-      </h2>
+<div class="flex flex-col h-full">
+  <nav
+    class="flex items-center justify-between px-4 py-3 rounded-b-md bg-blue-50 shadow-sm"
+  >
+    <h2 class="text-lg font-semibold text-gray-800">
+      👤 {{ patient()?.username }} – {{ patient()?.email }} – N° National : {{
+      patient()?.patient?.nationnal_number }}
+    </h2>
 
-      <div class="flex items-center gap-3">
-        <a routerLink="stats" routerLinkActive="text-blue-600 font-semibold">🗓️ Rendez-vous</a>
-        <a routerLink="records" routerLinkActive="text-blue-600 font-semibold">📂 Dossier</a>
-        <a routerLink="ordonnance" routerLinkActive="text-blue-600 font-semibold">➕ Ordonnance</a>
-      </div>
-    </nav>
-
-    <div class="flex flex-1 flex-col md:flex-row overflow-hidden">
-      <main class="flex-1 p-6 overflow-y-auto bg-white rounded-l-md">
-        <router-outlet></router-outlet>
-      </main>
+    <div class="flex items-center gap-3">
+      <a routerLink="stats" routerLinkActive="text-blue-600 font-semibold"
+        >🗓️ Rendez-vous</a
+      >
+      <a routerLink="records" routerLinkActive="text-blue-600 font-semibold"
+        >📂 Dossier</a
+      >
+      <a routerLink="ordonnance" routerLinkActive="text-blue-600 font-semibold"
+        >➕ Ordonnance</a
+      >
     </div>
+  </nav>
+
+  <div class="flex flex-1 flex-col md:flex-row overflow-hidden">
+    <main class="flex-1 p-6 overflow-y-auto bg-white rounded-l-md">
+      <router-outlet></router-outlet>
+    </main>
   </div>
+</div>
 } @else {
-  <h1 class="text-red-500">Erreur lors du chargement du patient</h1>
+<h1 class="text-red-500">Erreur lors du chargement du patient</h1>
 }

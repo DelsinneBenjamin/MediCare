@@ -4,9 +4,11 @@ from django.conf import settings                                # Sert pour réc
 
 
 #Ici c'est une fonction de paginiation qui me servira pour tout mes actionList de viewsets ou DRF ne peu pas gérer la pagination automatiquement...
-
+#Je l'ai mis dans un fichier à part pour pas alourdir views.py et pour pouvoir la réutiliser partout
+# a utiliser quand je veux paginer une liste d'objets (ex: users_by_role)
+# voir doc DRF https://www.django-rest-framework.org/api-guide/pagination/#custom-pagination-styles
 class StandardResultsSetPagination(PageNumberPagination):
-    page_size = getattr(settings, 'PAGE_SIZE', 5)  # fallback sur 5 si pas défini
+    page_size = getattr(settings, 'PAGE_SIZE', 10)  # fallback sur 5 si pas défini
     page_size_query_param = 'page_size'
     max_page_size = 100
 

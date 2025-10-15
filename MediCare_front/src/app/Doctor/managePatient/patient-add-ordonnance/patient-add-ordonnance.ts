@@ -7,11 +7,13 @@ import { PatientService } from '../../../core/services/patient-service';
   templateUrl: './patient-add-ordonnance.html',
   styleUrl: './patient-add-ordonnance.css'
 })
-export class PatientAddOrdonnance implements OnInit{
+export class PatientAddOrdonnance {
   private patientService = inject(PatientService);
-  patientId = this.patientService.patientId;
+
+  patientId = this.patientService.patientId
   
-    ngOnInit(): void {
-      console.log("Patient ID  ordonnance : ",this.patientId())
-     }
+  constructor() {
+    console.log("PatientID Service RECORDS", this.patientService.patientId())
+  }
+
 }

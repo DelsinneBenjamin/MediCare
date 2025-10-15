@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { AuthService } from './auth-service';
 import { Observable, throwError } from 'rxjs';
 import { UserService } from './user-service';
+import { PatientRecord } from '../interfaces/medicament';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,12 @@ export class DoctorService {
     const headers = this.authService.getHeaders();
     return this.http.get<User>(`http://localhost:8000/api/users/${id}/`, { headers });
   }
+
+  getPatientRecords(patientId: number): Observable<PatientRecord[]> {
+    return this.http.get<PatientRecord[]>(`/api/patients/${patientId}/records`);
+  }
   
+
   linkPatientToDoctor(patient: number | null): Observable<any> {
     const headers = this.authService.getHeaders();
     const currentDoctorId = this.userService.currentId();
