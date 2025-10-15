@@ -25,9 +25,9 @@ export class DoctorService {
   }
 
   getPatientRecords(patientId: number): Observable<PatientRecord[]> {
-    return this.http.get<PatientRecord[]>(`/api/patients/${patientId}/records`);
+    const headers = this.authService.getHeaders();
+    return this.http.get<PatientRecord[]>(`http://localhost:8000/api/ordonnances/${patientId}/`, { headers });
   }
-  
 
   linkPatientToDoctor(patient: number | null): Observable<any> {
     const headers = this.authService.getHeaders();
