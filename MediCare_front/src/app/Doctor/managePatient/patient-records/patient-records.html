@@ -1,55 +1,59 @@
-<div class="p-6 space-y-6">
-  <h2 class="text-2xl font-bold text-gray-800 border-b pb-2">
+<div class="p-8 bg-gray-50 min-h-screen">
+  <h2
+    class="text-3xl font-bold text-gray-900 border-b border-gray-300 pb-3 mb-6"
+  >
     Dossier médical du patient
   </h2>
 
-  @if (!record) {
-    <div class="text-gray-500 italic">
-      Aucun dossier médical trouvé pour ce patient.
-    </div>
+  @if (records.length === 0) {
+  <div class="text-center py-20 text-gray-500 italic text-lg">
+    Aucun dossier médical trouvé pour ce patient.
+  </div>
   } @else {
-    <div class="bg-white shadow-md rounded-2xl p-5 border border-gray-100 hover:shadow-lg transition-shadow duration-200">
-      <div class="flex justify-between items-center mb-3">
-        <h3 class="text-lg font-semibold text-blue-600">
-          Rapport #{{ record.id }}
-        </h3>
-        <p class="text-sm text-gray-500">
-          {{ record.date_o }}
-        </p>
-      </div>
+  <div class="overflow-x-auto">
+    <table
+      class="min-w-full border border-gray-200 bg-white rounded-2xl shadow-sm"
+    >
+      <thead class="bg-gray-100 text-gray-700 text-sm uppercase">
+        <tr>
+          <th class="px-6 py-3 text-left">Rapport #</th>
+          <th class="px-6 py-3 text-left">Date</th>
+          <th class="px-6 py-3 text-left">Contenu du rapport</th>
+          <th class="px-6 py-3 text-left">Médicaments prescrits</th>
+        </tr>
+      </thead>
 
-      <div class="mb-4">
-        <p class="text-gray-700 whitespace-pre-line">
-          {{ record.contentReport_o }}
-        </p>
-      </div>
+      <tbody class="text-sm text-gray-700">
+        @for (record of records; track record.id) {
+        <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+          <td class="px-6 py-4 font-semibold text-blue-700">{{ record.id }}</td>
 
-      <div>
-        <h4 class="font-medium text-gray-800 mb-2">Médicaments prescrits</h4>
+          <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+            {{ record.date_o }}
+          </td>
 
-        @if (record.medicaments.length === 0) {
-          <p class="text-gray-500 text-sm italic">Aucun médicament enregistré.</p>
-        } @else {
-          <table class="min-w-full text-sm text-left border border-gray-200 rounded-lg">
-            <thead class="bg-gray-50 text-gray-700">
-              <tr>
-                <th class="px-4 py-2 border-b">#</th>
-                <th class="px-4 py-2 border-b">Nom du médicament</th>
-                <th class="px-4 py-2 border-b">Quantité</th>
-              </tr>
-            </thead>
-            <tbody>
+          <td class="px-6 py-4 text-gray-700">{{ record.contentReport_o }}</td>
+
+          <td class="px-6 py-4">
+            @if (record.medicaments.length === 0) {
+            <span class="text-gray-400 italic">Aucun</span>
+            } @else {
+            <div class="flex flex-wrap gap-2">
               @for (med of record.medicaments; track med.id) {
-                <tr class="border-b hover:bg-gray-50">
-                  <td class="px-4 py-2 text-gray-600">{{ med.id }}</td>
-                  <td class="px-4 py-2 font-medium">{{ med.medicament.name_m }}</td>
-                  <td class="px-4 py-2 text-gray-700">{{ med.quantity }}</td>
-                </tr>
+              <span
+                class="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100 text-xs font-medium"
+              >
+                {{ med.medicament.name_m }}
+                <span class="text-gray-500">×{{ med.quantity }}</span>
+              </span>
               }
-            </tbody>
-          </table>
+            </div>
+            }
+          </td>
+        </tr>
         }
-      </div>
-    </div>
+      </tbody>
+    </table>
+  </div>
   }
 </div>

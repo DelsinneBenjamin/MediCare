@@ -15,19 +15,19 @@ export class PatientRecords {
   private DoctorService = inject(DoctorService)
 
   patientId = this.patientService.patientId
-  record: any = null;
+  records: any[] = [];
 
   constructor() {
     console.log("PatientID Service RECORDS", this.patientService.patientId())
-    this.getRecords(this.patientId()!);
+    this.getOrdonnanceByPatient(this.patientId()!);
   }
 
-  getRecords(patientId: number) {
-  this.DoctorService.getPatientRecords(patientId).subscribe({
-    next: (response) => {
-      this.record = response; // pas un tableau
-    }
-  });
-}
+  getOrdonnanceByPatient(patientId: number) {
+    this.DoctorService.getOrdonnanceByPatient(patientId).subscribe({
+      next: (response) => {
+        this.records = response;
+      }
+    });
+  }
 
 }
