@@ -1,24 +1,21 @@
 from django.db import models
 
-from CustomUser.models import Patient, Doctor
+# Pas d'import direct de CustomUser.models pour éviter le circular import problème vu que j'ai modifié le models CustomUser en rajoutant Speciality.. donc ça casse tout sauf si je fait ceci :)
 
-
-# Create your models here.
 class Medicament(models.Model):
     name_m = models.TextField()
 
 
 class Ordonnance(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="ordonnances")
-    doctor = models.ForeignKey(Doctor, on_delete=models.PROTECT, related_name="ordonnances")
+    #Vu que c'est que du "text" je peux mettre CustomUser.Patient directement en string
+    patient = models.ForeignKey('CustomUser.Patient', on_delete=models.CASCADE, related_name="ordonnances")
+    doctor = models.ForeignKey('CustomUser.Doctor', on_delete=models.PROTECT, related_name="ordonnances")
 
     date_o = models.DateField()
     contentReport_o = models.TextField()
-    #through me fait avoir la relation avec la table intermediaire écris en dessous
+    # through permet d'utiliser la table intermédiaire pour les attributs supplémentaires
     medicaments = models.ManyToManyField(Medicament, through="OrdonnanceMedicament")
 
-#Ici je crée une table intermediaire MOI MEME car j'ai un attribut supplémentaire Quantité
-#Si je n'avais aucune table, je n'aurais pas besoin de le faire, Django l'aurais fait automatiquement
 
 class OrdonnanceMedicament(models.Model):
     ordonnance = models.ForeignKey(Ordonnance, on_delete=models.CASCADE)

@@ -1,16 +1,17 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.hashers import make_password
-from CustomUser.models import CustomUser, Doctor, Patient
+from CustomUser.models import CustomUser, Doctor, Patient, Speciality
 from location.models import Address, Site
 from ordonnance.models import Medicament, Ordonnance, OrdonnanceMedicament
 from datetime import date, timedelta
 import random
 
+
 class Command(BaseCommand):
     help = "Initialize the database with doctors, patients, addresses, sites, medicaments and ordonnances"
 
     def handle(self, *args, **kwargs):
-
+        # --- clean tables ---
         OrdonnanceMedicament.objects.all().delete()
         Ordonnance.objects.all().delete()
         Doctor.objects.all().delete()
@@ -19,6 +20,8 @@ class Command(BaseCommand):
         Address.objects.all().delete()
         Site.objects.all().delete()
         Medicament.objects.all().delete()
+        Speciality.objects.all().delete()
+
         # ------------------ ADRESSES ------------------
         addresses_data = [
             ("Rue de la Loi", "1000", "Bruxelles"),
@@ -26,11 +29,6 @@ class Command(BaseCommand):
             ("Boulevard Tirou", "6000", "Charleroi"),
             ("Rue Saint-Gilles", "4000", "Liège"),
             ("Rue Royale", "1000", "Bruxelles"),
-            ("Grand-Place", "7000", "Mons"),
-            ("Rue Neuve", "1000", "Bruxelles"),
-            ("Avenue Rogier", "5000", "Namur"),
-            ("Rue du Marché", "7700", "Mouscron"),
-            ("Rue du Progrès", "1030", "Schaerbeek"),
         ]
         addresses = []
         for i, (street, postal, city) in enumerate(addresses_data, 1):
@@ -54,23 +52,24 @@ class Command(BaseCommand):
             site.address.set(random.sample(addresses, k=2))
             sites.append(site)
 
+        # ------------------ SPECIALITIES ------------------
+        specialities_names = [
+            "Cardiologue", "Dermatologue", "Pédiatre", "Neurologue",
+            "Dentiste", "Psychiatre", "Radiologue", "Chirurgien",
+            "Ophtalmologue", "Gynécologue", "ORL"
+        ]
+        specialities = []
+        for name in specialities_names:
+            s = Speciality.objects.create(name=name)
+            specialities.append(s)
+
         # ------------------ DOCTEURS ------------------
         doctors_names = [
             ("Mathys", "Noteboom"),
             ("Sarah", "Cherchi"),
             ("Thomas", "Balatro"),
             ("Tomaso", "Geeko"),
-            ("Pierre", "Chabrier"),
-            ("BumbleBee", "Megatron"),
-            ("Michel", "Blanc"),
-            ("Divane", "Master"),
-            ("Manuel", "Ferrara"),
-            ("Lara", "Clette")
-        ]
-        specialities = [
-            "Cardiologue", "Dermatologue", "Pédiatre", "Neurologue",
-            "Dentiste", "Psychiatre", "Radiologue", "Chirurgien",
-            "Ophtalmologue", "Gynécologue", "ORL"
+            ("Pierre", "Chabrier")
         ]
         doctors = []
         for i, (first_name, last_name) in enumerate(doctors_names):
@@ -86,12 +85,12 @@ class Command(BaseCommand):
             )
             doctor = Doctor.objects.create(
                 user=user,
-                speciality=specialities[i],
+                speciality=specialities[i % len(specialities)],
                 inami_number=f"INAMI{i+1:05d}"
             )
             doctor.sites.set(random.sample(sites, k=1))
             doctors.append(doctor)
-        self.stdout.write(self.style.SUCCESS("✅ docteur!"))
+        self.stdout.write(self.style.SUCCESS("✅ docteurs créés !"))
 
         # ------------------ PATIENTS ------------------
         patients_names = [
@@ -99,105 +98,7 @@ class Command(BaseCommand):
             ("Nathan", "Petit"),
             ("Léa", "Morel"),
             ("Tom", "Girard"),
-            ("Clara", "Gautier"),
-            ("Antoine", "Carre"),
-            ("Julie", "Benoit"),
-            ("Maxime", "Robin"),
-            ("Inès", "Faure"),
-            ("Louis", "Chevalier"),
-            ("Benoît", "Fromage"),
-            ("Fanny", "Chaussette"),
-            ("Gaston", "Bidon"),
-            ("Lucie", "Patate"),
-            ("Théo", "Chocolat"),
-            ("Camille", "Cactus"),
-            ("Romain", "Tartine"),
-            ("Élodie", "Crayon"),
-            ("Jules", "Pamplemousse"),
-            ("Sophie", "Biscotte"),
-            ("Arthur", "Cochonnet"),
-            ("Margot", "Marmotte"),
-            ("Clément", "Chouquette"),
-            ("Manon", "Moufette"),
-            ("Alexis", "Biscuit"),
-            ("Lola", "Tartiflette"),
-            ("Victor", "Radis"),
-            ("Emma", "Pistache"),
-            ("Louis", "Miel"),
-            ("Chloé", "Fraise"),
-            ("Lucas", "Citron"),
-            ("Zoé", "Carotte"),
-            ("Hugo", "Beignet"),
-            ("Mathilde", "Épinard"),
-            ("Émile", "Frometon"),
-            ("Camille", "Brocoli"),
-            ("Nina", "Popcorn"),
-            ("Quentin", "Croquette"),
-            ("Léon", "Tortue"),
-            ("Alice", "Galette"),
-            ("Julien", "Chapeau"),
-            ("Manon", "Bidouille"),
-            ("Max", "Saucisson"),
-            ("Clara", "Pample"),
-            ("Thomas", "Bourdon"),
-            ("Éléna", "Zigzag"),
-            ("Gabriel", "Biscotin"),
-            ("Anaïs", "Gaufrette"),
-            ("Baptiste", "Marmelade"),
-            ("Léa", "Pomme"),
-            ("Nathan", "Popette"),
-            ("Camille", "Pudding"),
-            ("Lucas", "Crème"),
-            ("Emma", "Caramel"),
-            ("Arthur", "Foufou"),
-            ("Inès", "Patounette"),
-            ("Théo", "Tartiflette"),
-            ("Margaux", "Chimère"),
-            ("Alexandre", "Cornichon"),
-            ("Clémence", "Abricot"),
-            ("Louis", "Meringue"),
-            ("Julie", "Cacahuète"),
-            ("Romain", "Chicorée"),
-            ("Chloé", "Pompon"),
-            ("Maxime", "Biscornet"),
-            ("Lola", "Fripouille"),
-            ("Gabriel", "Zigouigoui"),
-            ("Élodie", "Chiffon"),
-            ("Hugo", "Pirouette"),
-            ("Manon", "Pétale"),
-            ("Julien", "Croissant"),
-            ("Sophie", "Tagada"),
-            ("Clément", "Farfelu"),
-            ("Emma", "Moustache"),
-            ("Lucas", "Zazou"),
-            ("Alice", "Patapouf"),
-            ("Nathan", "Roudoudou"),
-            ("Léa", "Pamplemousse"),
-            ("Tom", "Bidibulle"),
-            ("Clara", "Flocon"),
-            ("Antoine", "Rigolus"),
-            ("Julie", "Marmelade"),
-            ("Maxime", "Cocorico"),
-            ("Inès", "Ficelle"),
-            ("Louis", "Gourmand"),
-            ("Benoît", "Moustachu"),
-            ("Fanny", "Patinette"),
-            ("Gaston", "Rigolo"),
-            ("Lucie", "Saperlipopette"),
-            ("Théo", "Zigzag"),
-            ("Camille", "Farfadet"),
-            ("Romain", "Patatras"),
-            ("Élodie", "Carabistouille"),
-            ("Jules", "Quenouille"),
-            ("Sophie", "Chocapic"),
-            ("Arthur", "Popol"),
-            ("Margot", "Zouzou"),
-            ("Clément", "Flibustier"),
-            ("Manon", "Meringue"),
-            ("Alexis", "Zigouigoui"),
-            ("Lola", "Choupi")
         ]
-
         patients = []
         for i, (first_name, last_name) in enumerate(patients_names):
             username = f"{first_name}.{last_name}".lower()
@@ -215,13 +116,12 @@ class Command(BaseCommand):
                 nationnal_number=str(random.randint(10000000000, 99999999999))
             )
             patients.append(patient)
-        self.stdout.write(self.style.SUCCESS("✅ patient !"))
+        self.stdout.write(self.style.SUCCESS("✅ patients créés !"))
 
         # ------------------ MÉDICAMENTS ------------------
         med_names = [
             "Paracetamol", "Ibuprofen", "Amoxicillin", "Aspirin",
-            "Metformin", "Omeprazole", "Simvastatin", "Atorvastatin",
-            "Ciprofloxacin", "Prednisone"
+            "Metformin", "Omeprazole"
         ]
         medicaments = []
         for name in med_names:
@@ -244,6 +144,11 @@ class Command(BaseCommand):
                         medicament=med,
                         quantity=random.randint(1, 10)
                     )
-        self.stdout.write(self.style.SUCCESS("✅ ordonnance !"))
+        self.stdout.write(self.style.SUCCESS("✅ ordonnances créées !"))
 
-        self.stdout.write(self.style.SUCCESS("✅ Base de test complète initialisée !"))
+        # ------------------ DOCTORPATIENT ------------------
+        # Ici, on ne crée rien par défaut
+        # La table DoctorPatient reste vide, ce sera le docteur qui ajoutera ses patients
+        self.stdout.write(self.style.SUCCESS("✅ table DoctorPatient laissée vide !"))
+
+        self.stdout.write(self.style.SUCCESS("✅ Base de test initialisée avec succès !"))

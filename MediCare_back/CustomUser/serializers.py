@@ -1,10 +1,15 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from .models import CustomUser, Doctor, Patient
+from .models import CustomUser, Doctor, Patient, DoctorPatient, Speciality
 from .user_service import create_user_with_profile
 
 
 class DoctorSerializer(serializers.ModelSerializer):
+    speciality = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=Speciality.objects.all()
+    )
+
     class Meta:
         model = Doctor
         fields = ['speciality', 'inami_number']
@@ -17,6 +22,11 @@ class PatientSerializer(serializers.ModelSerializer):
         model = Patient
         fields = ['nationnal_number', "is_linked"]
 
+        # Compare explicitement avec le CustomUser lié au patient
+        # debug optionnel
+        # print("DEBUG doctor patients ids:", list(doctor.patients.values_list("id", flat=True)))
+        # print("DEBUG patient_user_id:", patient_user_id)
+
     def get_is_linked(self, instance):
         request = self.context.get('request')
         if not request or not request.user.is_authenticated:
@@ -27,11 +37,12 @@ class PatientSerializer(serializers.ModelSerializer):
         except Doctor.DoesNotExist:
             return False
 
-        # Compare explicitement avec le CustomUser lié au patient
-        patient_user_id = instance.user.pk
-        # debug optionnel
-        # print("DEBUG doctor patients ids:", list(doctor.patients.values_list("id", flat=True)))
-        # print("DEBUG patient_user_id:", patient_user_id)
+        # Vérifie via DoctorPatient
+        return DoctorPatient.objects.filter(
+            doctor=doctor,
+            patient=instance,
+            is_linked=True
+        ).exists()
 
         return doctor.patients.filter(pk=patient_user_id).exists()
 
