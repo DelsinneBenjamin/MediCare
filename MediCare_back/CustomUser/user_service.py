@@ -39,10 +39,15 @@ def link_patient_doctor(patient_id: int, doctor_id: int) -> Doctor:
 
     # Ici je vérifie que l'user ne prend pas un médecin qui à déjà la même spécialité
     # (a qui il est déjà affilé)
-    same_speciality = Doctor.objects.filter(
+    same_speciality = doctor.speciality.objects.filter(
         patients=user_patient,
         speciality=doctor.speciality
     ).exclude(user_id=doctor_id).exists()
+
+    # same_speciality = Doctor.objects.filter(
+    #     patients=user_patient,
+    #     speciality=doctor.speciality
+    # ).exclude(user_id=doctor_id).exists()
 
     if same_speciality:
         raise ValidationError({
