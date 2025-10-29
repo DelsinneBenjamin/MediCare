@@ -1,10 +1,10 @@
-name : CI - Medicare
+name: CI - Medicare
 
 on:
   push:
     branches: ['main', 'develop']
-    pull_request:
-      branches: ['main', 'develop']
+  pull_request:
+    branches: ['main', 'develop']
 
 jobs:
   backend-tests:
@@ -15,16 +15,20 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_USER: posgres
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 1234
           POSTGRES_DB: MediCare_db
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U medicare_user -d medicare_db"
+          --health-cmd="pg_isready -U postgres -d MediCare_db"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+
+    defaults:
+      run:
+        working-directory: ./MediCare/MediCare_back
 
     steps:
       - name: Checkout code
@@ -43,6 +47,6 @@ jobs:
 
       - name: Run backend tests
         env:
-          DATABASE_URL: postgres://medicare_user:medicare_pass@localhost:5432/MediCare_db
+          DATABASE_URL: postgres://postgres:1234@localhost:5432/MediCare_db
         run: |
-          pytest backend/tests/
+          python manage.py test -v2
