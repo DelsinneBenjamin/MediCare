@@ -30,7 +30,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Show repo structure (debug)
+      - name: Debug repo structure
         run: |
           pwd
           ls -R | head -n 50
@@ -41,14 +41,21 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        working-directory: ./MediCare/MediCare_back
+        working-directory: ./MediCare_back
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-django psycopg2-binary
 
+      - name: Run migrations
+        working-directory: ./MediCare_back
+        env:
+          DATABASE_URL: postgres://postgres:1234@localhost:5432/MediCare_db
+        run: |
+          python manage.py migrate
+
       - name: Run backend tests
-        working-directory: ./MediCare/MediCare_back
+        working-directory: ./MediCare_back
         env:
           DATABASE_URL: postgres://postgres:1234@localhost:5432/MediCare_db
         run: |
