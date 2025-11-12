@@ -1,6 +1,5 @@
-from tkinter.constants import CASCADE
-
 from django.db import models
+
 
 # Create your models here.
 class Address(models.Model):
@@ -11,13 +10,15 @@ class Address(models.Model):
     country = models.CharField(max_length=100, default="Belgium")
 
 
-
 class Site(models.Model):
     name = models.TextField()
-    site_type = models.CharField(max_length=20,
-        choices= [("HOSPITAL", "Hôpital"),
-                  ("CLINIC", "Clinique"),
-                  ("CABINET", "Cabinet")]
+    site_type = models.CharField(
+        max_length=20,
+        choices=[
+            ("HOSPITAL", "Hôpital"),
+            ("CLINIC", "Clinique"),
+            ("CABINET", "Cabinet"),
+        ],
     )
 
     address = models.ManyToManyField(Address, related_name="site")

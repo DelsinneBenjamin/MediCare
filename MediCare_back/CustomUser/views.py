@@ -30,7 +30,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['email', 'first_name', 'last_name', 'role', 'patient__nationnal_number']
+    filterset_fields = ['email', 'first_name', 'last_name', 'role', 'patient__nationnal_number', 'doctor__inami_number','doctor__speciality']
 
 
     #C'est une méthode du DRF qui permet de passer des informations supplémentaires au serializer, des types, des données,.... ici isLinked
@@ -88,7 +88,8 @@ class UserViewSet(viewsets.ModelViewSet):
 # ============== DoctorViewSet =============
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.filter(doctor__isnull=False)
-    serializer_class = UserSerializerfilter_backends = [DjangoFilterBackend]
+    serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['inami_number', 'speciality','email', 'first_name', 'last_name','role']
     search_fields = ['first_name', 'last_name', 'email', 'nationnal_number']
 
@@ -154,8 +155,8 @@ class PatientViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['nationnal_number','email', 'first_name', 'last_name', 'role']
-    search_fields = ['first_name', 'last_name', 'email', 'nationnal_number']
+    filterset_fields = ['patient__nationnal_number','email', 'first_name', 'last_name', 'role']
+    search_fields = ['first_name', 'last_name', 'email', 'patient__nationnal_number']
 
     @action(detail=True, methods=['get'], url_path='doctors', permission_classes = [IsAuthenticated])
     def get_doctors(self, request, pk=None):

@@ -1,0 +1,105 @@
+services:
+  backend:
+
+    # Le dockerfile du backend
+    build: ./MediCare_back
+
+    # Le nom de l'image personnalisée
+    image: docker_medicare_backend:latest
+
+    # Nom lisible sur le container
+    container_name: Medicare_backend
+
+    # Mapping du port local 8000 vers le port du conteneur Django
+    ports:
+      - "8000:8000"
+
+    # Ce service (backend) ne démarre qu'après la base de données
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+
+    # Variables d'environnement (connexion à la DB)
+    environment:
+      - DATABASE_URL=postgresql://postgres:1234@postgres_db:5432/MediCare_db
+
+    # Si le backend plante, Docker relance automatiquement le container
+    restart: always
+
+    # Le backend communique sur un réseau interne "app_network"
+    networks:
+      - app_network
+    
+  frontend:
+
+    # Le dockerfile du frontend Angular
+    build:
+      context: ./MediCare_front
+      dockerfile: Dockerfile
+
+    # Le nom de l'image personnalisée
+    image: docker_medicare_frontend:latest
+
+    # Nom lisible sur le container
+    container_name: Medicare_frontend
+
+    # Mapping du port local 4200 vers le port 80 du conteneur (serveur nginx)
+    ports:
+      - "4200:80"
+
+    # Le frontend ne démarre qu'après le backend
+    depends_on:
+      - backend
+
+    # Relance auto en cas de crash
+    restart: always
+
+    # Communication sur le réseau interne "app_network"
+    networks:
+      - app_network
+
+  postgres_db:
+
+    # Image officielle PostgreSQL version 17
+    image: postgres:17
+
+    # Nom lisible sur le container
+    container_name: MediCare_db
+
+    # Variables d'environnement de la base de données
+    environment:
+      POSTGRES_DB: MediCare_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+
+    # Mapping du port local 5432 vers le conteneur PostgreSQL
+    ports:
+      - "5432:5432"
+
+    # Volume 'postgres_data' => persiste les données de la DB
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    # Ici ça me permet d'être sur que le postgres est bien lancé avant d'essayer de se connecter
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d MediCare_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    # Si la DB plante, Docker relance le container
+    restart: always
+
+    # Communication sur le réseau interne "app_network"
+    networks:
+      - app_network
+
+# Définition du réseau Docker commun aux services
+networks:
+  app_network:
+    driver: bridge
+
+# Volume pour persister les données PostgreSQL
+volumes:
+  postgres_data:
