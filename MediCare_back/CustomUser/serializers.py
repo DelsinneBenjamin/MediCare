@@ -28,23 +28,23 @@ class PatientSerializer(serializers.ModelSerializer):
         # print("DEBUG patient_user_id:", patient_user_id)
 
     def get_is_linked(self, instance):
+        # instance c'est l'objet Patient
         request = self.context.get('request')
+
+        # Ici si pas de request ou user non connecté,  c faux
         if not request or not request.user.is_authenticated:
             return False
 
+        # On récup le profil Docteur de l'user connecté
         try:
             doctor = request.user.doctor
         except Doctor.DoesNotExist:
-            return False
+            return False  # Si l'utilisateur connecté n'est pas un docteur
 
-        # Vérifie via DoctorPatient
-        return DoctorPatient.objects.filter(
-            doctor=doctor,
-            patient=instance,
-            is_linked=True
-        ).exists()
-
-        return doctor.patients.filter(pk=patient_user_id).exists()
+        # On vérifie si l'utilisateur lié à ce patient (instance.user)
+        # se trouve dans la liste des patients du docteur
+        # Si ca correspond au doctor.patients.add() du service.
+        return doctor.patients.filter(id=instance.user.id).exists()
 
 class UserSerializer(serializers.ModelSerializer):
     doctor = DoctorSerializer(required=False)
