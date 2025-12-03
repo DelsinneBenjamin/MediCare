@@ -47,9 +47,9 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='by-role/(?P<role>[^/.]+)', permission_classes = [IsAuthenticated])
     def users_by_role(self, request, role=None):
         if role == 'doctor':
-            users = CustomUser.objects.filter(doctor__isnull=False)
+            users = CustomUser.objects.filter(doctor__isnull=False).order_by('id')
         elif role == 'patient':
-            users = CustomUser.objects.filter(patient__isnull=False)
+            users = CustomUser.objects.filter(patient__isnull=False).order_by('id')
         else:
             return Response({"detail": "Role invalide"}, status=400)
 

@@ -75,24 +75,36 @@ export class ListPatient implements OnInit{
 
 
 
-  linkPatient(patientId: number){
-    if(!this.currentId()){
-      console.error("Aucun docteur courrant (probleme currentUser)");
+  linkPatient(patientId: number) {
+    if (!this.currentId()) {
+      console.error("Aucun docteur courant (probleme currentUser)");
       return;
     }
 
     this.linkingPatientId.set(patientId);
 
-      this.doctorService.linkPatientToDoctor(patientId).subscribe({
-        next: (res) => {
-          console.log(`Patient ${patientId} lié au docteur ${this.currentId()} avec succès`, res);
-          this.linkingPatientId.set(null);
-          this.getAllPatients()
-        },
-        error: (err) => {
-          this.linkingPatientId.set(null);
+    this.doctorService.linkPatientToDoctor(patientId).subscribe({
+      next: (res) => {
+        console.log(`Patient ${patientId} lié avec succès`, res);
+        alert("Patient lié avec succès !");
+        this.linkingPatientId.set(null);
+        this.getAllPatients();
+      },
+      error: (err) => {
+        this.linkingPatientId.set(null);
+
+        console.log('Erreur reçue:', err);
+        if (err.status === 400) {
+          if (err.error && err.error.non_field_errors) {
+            alert(err.error.non_field_errors[0]); 
+          } else {
+            alert("Impossible de lier ce patient : données invalides.");
+          }
+        } else {
+          alert("Une erreur technique est survenue. Veuillez réessayer.");
         }
-      });
+      }
+    });
   }
 
   unlinkPatient(patientId: number){

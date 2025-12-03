@@ -35,23 +35,19 @@ def link_patient_doctor(patient_id: int, doctor_id: int) -> Doctor:
 
     # Verif si le patient est pas déjà lié
     if doctor.patients.filter(id=user_patient.id).exists():
-        raise ValidationError({"non_field_errors": "Patient déjà lié à ce docteur."})
+        raise ValidationError({"non_field_errors": ["Patient déjà lié à ce docteur."]})
 
     # Ici je vérifie que l'user ne prend pas un médecin qui à déjà la même spécialité
     # (a qui il est déjà affilé)
-    same_speciality = doctor.speciality.objects.filter(
+    has_same_speciality = Doctor.objects.filter(
         patients=user_patient,
         speciality=doctor.speciality
     ).exclude(user_id=doctor_id).exists()
 
-    # same_speciality = Doctor.objects.filter(
-    #     patients=user_patient,
-    #     speciality=doctor.speciality
-    # ).exclude(user_id=doctor_id).exists()
-
-    if same_speciality:
+    if has_same_speciality:
+        spec_name = doctor.speciality
         raise ValidationError({
-            f"Le patient a déjà un docteur spécialisé en : {doctor.speciality}"
+            "non_field_errors": [f"Le patient a déjà un docteur spécialisé en : {doctor.speciality}"]
         })
 
     # Lie le patient au docteur
